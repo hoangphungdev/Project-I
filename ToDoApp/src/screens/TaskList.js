@@ -4,18 +4,19 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
+import Task from '../components/Task';
 
 
 const TaskList = () => {
     const handlePress = () => {
-        console.log('Header pressed');
+        console.log('Return to Home Screen');
     };
     return (
         <View style={styles.container}>
             <View style={styles.TouchableOpacity}>
                 <TouchableOpacity
                     onPress={handlePress}>
-                    <Text style={styles.header}       >
+                    <Text style={styles.header}>
                         <Image
                             source={require('../../assets/icons8-less-than-50.png')}
                             style={styles.iconLessThan}
@@ -24,29 +25,11 @@ const TaskList = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.subHeader}>Quan trọng</Text>
-                <View style={styles.task}>
-                    <Image
-                        source={require('../../assets/icons8-circle-48.png')}
-                        style={styles.iconCircle}
-                    />
-                    <Text>Đi học</Text>
-                </View>
-                <View style={styles.task}>
-                    <Image
-                        source={require('../../assets/icons8-circle-48.png')}
-                        style={styles.iconCircle}
-                    />
-                    <Text>Đi làm</Text>
-                </View>
-                <View style={styles.task}>
-                    <Image
-                        source={require('../../assets/icons8-circle-48.png')}
-                        style={styles.iconCircle}
-                    />
-                    <Text>Đi chơi</Text>
-                </View>
+                <Task taskName="Đi học là một điều vui là một điều vui" />
+                <Task taskName="Đi học" />
+                <Task taskName="Đi học" />
             </ScrollView>
             <TouchableOpacity style={styles.button}>
                 <Image
@@ -84,7 +67,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginTop: 1,
-        height: 50,
+        height: 55,
     },
     button: {
         flexDirection: 'row',
@@ -93,7 +76,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginTop: 10,
-        height: 50,
+        height: 55,
     },
     buttonText: {
         fontSize: 15,
