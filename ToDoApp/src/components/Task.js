@@ -5,6 +5,7 @@ const Task = ({ taskName }) => {
     const [isComplete, setComplete] = useState(false);
     const [isImportant, setImportant] = useState(false);
 
+
     const handlePressComplete = () => {
         setComplete(!isComplete);
     };
@@ -13,8 +14,16 @@ const Task = ({ taskName }) => {
         setImportant(!isImportant);
     };
 
+    const handlePress = () => {
+        console.log('Task is pressed');
+    }
+
+
+
     return (
-        <View style={styles.task}>
+        <TouchableOpacity
+            style={styles.task}
+            onPress={handlePress}>
             <TouchableOpacity onPress={handlePressComplete}>
                 <Image
                     source={isComplete
@@ -32,7 +41,7 @@ const Task = ({ taskName }) => {
                     style={styles.iconStar}
                 />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -41,8 +50,8 @@ const styles = StyleSheet.create({
     task: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#white',
-        borderRadius: 5,
+        backgroundColor: 'white',
+        borderRadius: 7,
         padding: 10,
         marginTop: 1,
         minHeight: 60,

@@ -1,21 +1,38 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Modal, View, Text, TextInput } from 'react-native'
+import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
 import Task from '../components/Task';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+
 
 
 const TaskList = () => {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newTask, setNewTask] = useState('');
+
     const handlePress = () => {
         console.log('Return to Home Screen');
+    };
+
+    const handleAddTask = () => {
+        setNewTask('');
+        setModalVisible(true);
+    };
+
+    const handleSaveTask = () => {
+        if (newTask.length > 0) {
+            console.log('New task: ', newTask);
+        }
+        setModalVisible(false);
     };
     return (
         <View style={styles.container}>
             <View style={styles.TouchableOpacity}>
                 <TouchableOpacity
-                    onPress={handlePress}>
+                    onPress={handlePress}
+                >
                     <Text style={styles.header}>
                         <Image
                             source={require('../../assets/icons8-less-than-50.png')}
@@ -31,13 +48,47 @@ const TaskList = () => {
                 <Task taskName="Đi học" />
                 <Task taskName="Đi học" />
             </ScrollView>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+                onPress={handleAddTask}
+                style={styles.button}>
                 <Image
                     source={require('../../assets/icons8-add-50.png')}
                     style={styles.iconAdd}
                 />
                 <Text style={styles.buttonText}>Thêm tác vụ</Text>
             </TouchableOpacity>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                style={{ flex: 1 }}
+            >
+                <TouchableOpacity
+                    style={{ flex: 1 }}
+                    onPress={handleSaveTask}
+                    activeOpacity={1}
+                >
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        style={styles.centeredView}
+                    >
+                        <View style={styles.modalView}>
+                            <Image
+                                source={require('../../assets/icons8-circle-48.png')}
+                                style={styles.iconAdd}
+                            />
+                            <TextInput
+                                style={styles.modalText}
+                                onChangeText={setNewTask}
+                                value={newTask}
+                                placeholder="Nhập tác vụ mới"
+                                autoFocus={true}
+                            />
+                        </View>
+                    </KeyboardAvoidingView>
+                </TouchableOpacity>
+            </Modal>
         </View >
     );
 }
@@ -60,20 +111,11 @@ const styles = StyleSheet.create({
         color: '#EF6363',
         marginBottom: 10,
     },
-    task: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFF5EE',
-        borderRadius: 5,
-        padding: 10,
-        marginTop: 1,
-        height: 55,
-    },
     button: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#FFF5EE',
-        borderRadius: 5,
+        borderRadius: 7,
         padding: 10,
         marginTop: 10,
         height: 55,
@@ -90,10 +132,30 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
     },
-    iconCircle: {
-        width: 27,
-        height: 27,
-        marginRight: 10,
+    centeredView: {
+        flex: 1,
+        justifyContent: 'flex-end',
+    },
+    modalView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderTopStartRadius: 10,
+        borderTopEndRadius: 10,
+        padding: 10,
+        marginTop: 1,
+        height: 60,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.45,
+        shadowRadius: 5,
+    },
+    modalText: {
+        fontSize: 20,
+        marginLeft: 10,
     },
 });
 
