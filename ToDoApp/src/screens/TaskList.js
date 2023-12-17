@@ -1,10 +1,10 @@
-import { Modal, View, Text, TextInput } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
-import Task from '../components/Task';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import Task from '../components/Common/Task';
+import { AddTaskModal } from '../components/Modal/AddTaskModal';
 
 
 
@@ -57,38 +57,13 @@ const TaskList = () => {
                 />
                 <Text style={styles.buttonText}>Thêm tác vụ</Text>
             </TouchableOpacity>
-
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                style={{ flex: 1 }}
-            >
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                    onPress={handleSaveTask}
-                    activeOpacity={1}
-                >
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === "ios" ? "padding" : "height"}
-                        style={styles.centeredView}
-                    >
-                        <View style={styles.modalView}>
-                            <Image
-                                source={require('../../assets/icons8-circle-48.png')}
-                                style={styles.iconAdd}
-                            />
-                            <TextInput
-                                style={styles.modalText}
-                                onChangeText={setNewTask}
-                                value={newTask}
-                                placeholder="Nhập tác vụ mới"
-                                autoFocus={true}
-                            />
-                        </View>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
-            </Modal>
+            <AddTaskModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                newTask={newTask}
+                setNewTask={setNewTask}
+                handleSaveTask={handleSaveTask}
+            />
         </View >
     );
 }
@@ -131,31 +106,6 @@ const styles = StyleSheet.create({
     iconAdd: {
         width: 30,
         height: 30,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: 'flex-end',
-    },
-    modalView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderTopStartRadius: 10,
-        borderTopEndRadius: 10,
-        padding: 10,
-        marginTop: 1,
-        height: 60,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        },
-        shadowOpacity: 0.45,
-        shadowRadius: 5,
-    },
-    modalText: {
-        fontSize: 20,
-        marginLeft: 10,
     },
 });
 

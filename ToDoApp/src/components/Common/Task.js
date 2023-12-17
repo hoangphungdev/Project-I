@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 
 const Task = ({ taskName }) => {
     const [isComplete, setComplete] = useState(false);
@@ -27,8 +27,8 @@ const Task = ({ taskName }) => {
             <TouchableOpacity onPress={handlePressComplete}>
                 <Image
                     source={isComplete
-                        ? require('../../assets/icons8-circle-48.png')
-                        : require('../../assets/icons8-checked-48.png')}
+                        ? require('../../../assets/icons8-circle-48.png')
+                        : require('../../../assets/icons8-checked-48.png')}
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
@@ -36,8 +36,8 @@ const Task = ({ taskName }) => {
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant
-                        ? require('../../assets/icons8-star-50.png')
-                        : require('../../assets/icons8-star-50-red.png')}
+                        ? require('../../../assets/icons8-star-50.png')
+                        : require('../../../assets/icons8-star-50-red.png')}
                     style={styles.iconStar}
                 />
             </TouchableOpacity>
