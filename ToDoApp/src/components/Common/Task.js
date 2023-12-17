@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
         minHeight: 60,
     },
     iconCircle: {
-        width: 27,
-        height: 27,
+        width: 30,
+        height: 30,
         marginRight: 10,
     },
     iconStar: {

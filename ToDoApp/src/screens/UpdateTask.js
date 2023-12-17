@@ -1,15 +1,18 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, TextInput, Button } from 'react-native'
+import React, { useState, useRef } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
 import Task from '../components/Common/Task';
+import AddStep from '../components/Common/AddStep';
 
 
 const UpdateTask = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [newTask, setNewTask] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
+    const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
 
     const handlePress = () => {
         console.log('Return to Home Screen');
@@ -38,16 +41,25 @@ const UpdateTask = () => {
                         style={styles.iconLessThan}
                     />
                     <Text style={styles.headerText}>Quan trọng</Text>
+                    <View style={{ flex: 1 }} ></View>
+                    {isCompleteButtonVisible && (
+                        <Button title="Hoàn thành" onPress={() => {
+                            setIsPressed(false);
+                            setIsCompleteButtonVisible(false);
+                        }} />
+
+                    )}
                 </TouchableOpacity>
                 <Task taskName="Đi học " />
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
             <ScrollView
-                // style={{ backgroundColor: '#E6E6FA' }}
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                    <Text style={styles.addStep}>Thêm bước</Text>
+                    <AddStep setIsCompleteButtonVisible={setIsCompleteButtonVisible} />
+
+                    <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
                     <Text style={styles.notification}>Đã thêm vào Ngày của Tôi</Text>
                     <View style={styles.iconContainer}>
                         <Text style={styles.icon}>Nhắc tới</Text>
@@ -58,7 +70,7 @@ const UpdateTask = () => {
                     </View>
 
                 </View>
-            </ScrollView>
+            </ScrollView >
 
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
             <View style={styles.footer}>
@@ -97,9 +109,10 @@ const styles = StyleSheet.create({
     },
 
     content: {
-        marginLeft: 10,
-        marginRight: 10,
+        marginLeft: 20,
+        marginRight: 20,
     },
+
     icon: {
         height: 30,
     },
