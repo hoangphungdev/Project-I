@@ -2,17 +2,16 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-const AddStep = ({ setIsCompleteButtonVisible }) => {
-    const [isPressed, setIsPressed] = useState(false);
+const AddStep = (props) => {
     const inputRef = useRef(null);
 
     return (
         <TouchableOpacity style={styles.addStep} onPress={() => {
-            setIsPressed(true);
-            setIsCompleteButtonVisible(true);
+            props.setIsPressed(true);
+            props.setIsCompleteButtonVisible(true);
             setTimeout(() => inputRef.current.focus(), 100);
         }}>
-            {isPressed ? (
+            {props.isPressed ? (
                 <>
                     <Image
                         source={require('../../../assets/icons8-circle-48-gray.png')} // Replace this with the path to your other icon
@@ -21,7 +20,8 @@ const AddStep = ({ setIsCompleteButtonVisible }) => {
                     <TextInput
                         placeholder='Thêm bước'
                         ref={inputRef}
-                        style={styles.textAddStep} />
+                        style={styles.textAddStep}
+                        onChangeText={props.setNewStep} />
                 </>
             ) : (
                 <>
@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     addStep: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
         height: 50,
     },
     iconAdd: {

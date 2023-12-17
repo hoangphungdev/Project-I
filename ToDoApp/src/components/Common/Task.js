@@ -18,8 +18,6 @@ const Task = ({ taskName }) => {
         console.log('Task is pressed');
     }
 
-
-
     return (
         <TouchableOpacity
             style={styles.task}
@@ -27,8 +25,8 @@ const Task = ({ taskName }) => {
             <TouchableOpacity onPress={handlePressComplete}>
                 <Image
                     source={isComplete
-                        ? require('../../../assets/icons8-circle-48.png')
-                        : require('../../../assets/icons8-checked-48.png')}
+                        ? require('../../../assets/icons8-checked-48.png')
+                        : require('../../../assets/icons8-circle-48-gray.png')}
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
@@ -36,8 +34,8 @@ const Task = ({ taskName }) => {
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant
-                        ? require('../../../assets/icons8-star-50.png')
-                        : require('../../../assets/icons8-star-50-red.png')}
+                        ? require('../../../assets/icons8-star-50-red.png')
+                        : require('../../../assets/icons8-star-50.png')}
                     style={styles.iconStar}
                 />
             </TouchableOpacity>

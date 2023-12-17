@@ -6,6 +6,7 @@ import { ScrollView } from 'react-native';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
 import Task from '../components/Common/Task';
 import AddStep from '../components/Common/AddStep';
+import Step from '../components/Common/Step';
 
 
 const UpdateTask = () => {
@@ -13,22 +14,24 @@ const UpdateTask = () => {
     const [newTask, setNewTask] = useState('');
     const [isPressed, setIsPressed] = useState(false);
     const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
+    const [newStep, setNewStep] = useState('');
+    const [steps, setSteps] = useState([]);
+
 
     const handlePress = () => {
         console.log('Return to Home Screen');
     };
 
-    const handleAddTask = () => {
-        setNewTask('');
-        setModalVisible(true);
-    };
-
-    const handleSaveTask = () => {
-        if (newTask.length > 0) {
-            console.log('New task: ', newTask);
+    const handleCompleteAddStep = () => {
+        setIsPressed(false);
+        setIsCompleteButtonVisible(false);
+        if (newStep.length > 0) {
+            console.log('New step: ', newStep);
+            setSteps(prevSteps => [...prevSteps, newStep]);
         }
-        setModalVisible(false);
-    };
+        setNewStep('');
+    }
+
     return (
         <View style={styles.container}>
 
@@ -37,17 +40,13 @@ const UpdateTask = () => {
                     style={{ flexDirection: 'row', alignItems: 'center' }}
                     onPress={handlePress}>
                     <Image
-                        source={require('../../assets/icons8-less-than-50.png')}
+                        source={require('../../assets/icons8-less-than-50-blue.png')}
                         style={styles.iconLessThan}
                     />
                     <Text style={styles.headerText}>Quan trọng</Text>
                     <View style={{ flex: 1 }} ></View>
                     {isCompleteButtonVisible && (
-                        <Button title="Hoàn thành" onPress={() => {
-                            setIsPressed(false);
-                            setIsCompleteButtonVisible(false);
-                        }} />
-
+                        <Button title="Hoàn thành" onPress={handleCompleteAddStep} />
                     )}
                 </TouchableOpacity>
                 <Task taskName="Đi học " />
@@ -57,15 +56,23 @@ const UpdateTask = () => {
             <ScrollView
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                    <AddStep setIsCompleteButtonVisible={setIsCompleteButtonVisible} />
+                    {steps.map((step, index) => (
+                        <Step key={index} StepName={step} />
+                    ))}
+                    <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
+                    <AddStep
+                        isPressed={isPressed}
+                        setIsPressed={setIsPressed}
+                        setIsCompleteButtonVisible={setIsCompleteButtonVisible}
+                        setNewStep={setNewStep}
+                    />
 
                     <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
                     <Text style={styles.notification}>Đã thêm vào Ngày của Tôi</Text>
                     <View style={styles.iconContainer}>
-                        <Text style={styles.icon}>Nhắc tới</Text>
+                        <Text style={styles.icon}>Nhắc tôi</Text>
                         <Text style={styles.icon}>Thêm ngày đến hạn</Text>
                         <Text style={styles.icon}>Lặp lại</Text>
-                        <Text style={styles.icon}>Thêm tệp</Text>
                         <Text style={styles.icon}>Thêm ghi chú</Text>
                     </View>
 
@@ -101,7 +108,7 @@ const styles = StyleSheet.create({
     headerText: {
         justifyContent: 'center',
         fontSize: 20,
-        color: '#EF6363',
+        color: '#339AF0',
     },
     iconLessThan: {
         width: 25,
