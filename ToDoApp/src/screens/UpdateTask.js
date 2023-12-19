@@ -1,22 +1,24 @@
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, Button, Keyboard } from 'react-native'
 import React, { useState, useRef } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
-import { AddTaskModal } from '../components/Modal/AddTaskModal';
-import Task from '../components/Common/Task';
+import AddNameTask from '../components/Common/AddNameTask';
 import AddStep from '../components/Common/AddStep';
 import Step from '../components/Common/Step';
-
 
 const UpdateTask = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [newTask, setNewTask] = useState('');
     const [isPressed, setIsPressed] = useState(false);
     const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
+    const [currentState, setCurrentState] = useState('default');
     const [newStep, setNewStep] = useState('');
     const [steps, setSteps] = useState([]);
-
+    const [isAddMyDay, setIsAddMyDay] = useState(false);
+    const [isAddReminder, setIsAddReminder] = useState(false);
+    const [isAddDueDate, setIsAddDueDate] = useState(false);
+    const [isRepeat, setIsRepeat] = useState(false);
 
     const handlePress = () => {
         console.log('Return to Home Screen');
@@ -29,7 +31,38 @@ const UpdateTask = () => {
             console.log('New step: ', newStep);
             setSteps(prevSteps => [...prevSteps, newStep]);
         }
-        setNewStep('');
+        Keyboard.dismiss();
+    }
+
+    const handleCompleteAddTask = () => {
+        setIsCompleteButtonVisible(false);
+        Keyboard.dismiss();
+    }
+
+    const handleAddMyDay = () => {
+        setIsAddMyDay(!isAddMyDay);
+    }
+
+    const handleAddReminder = () => {
+        setIsAddReminder(!isAddReminder);
+    }
+
+    const handleAddDueDate = () => {
+        setIsAddDueDate(!isAddDueDate);
+    }
+
+    const handleRepeat = () => {
+        setIsRepeat(!isRepeat);
+    }
+    const handleComplete = () => {
+        switch (currentState) {
+            case 'state1':
+                // Perform action for state1
+                break;
+            case 'state2':
+                // Perform action for state2
+                break;
+        }
     }
 
     return (
@@ -49,7 +82,7 @@ const UpdateTask = () => {
                         <Button title="Hoàn thành" onPress={handleCompleteAddStep} />
                     )}
                 </TouchableOpacity>
-                <Task taskName="Đi học " />
+                <AddNameTask TaskName="Đi học " />
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
@@ -66,16 +99,72 @@ const UpdateTask = () => {
                         setIsCompleteButtonVisible={setIsCompleteButtonVisible}
                         setNewStep={setNewStep}
                     />
+                    <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
+
+                    <TouchableOpacity style={styles.addMyDay} onPress={handleAddMyDay}>
+                        <Image
+                            source={isAddMyDay
+                                ? require('../../assets/icons8-sun-48-blue.png')
+                                : require('../../assets/icons8-sun-48.png')
+                            }
+                            style={styles.iconSun}
+                        />
+                        {isAddMyDay ? (
+                            <>
+                                <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đã thêm vào Ngày của Tôi</Text>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm vào Ngày của Tôi</Text>
+                            </>
+                        )}
+                    </TouchableOpacity>
 
                     <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
-                    <Text style={styles.notification}>Đã thêm vào Ngày của Tôi</Text>
-                    <View style={styles.iconContainer}>
-                        <Text style={styles.icon}>Nhắc tôi</Text>
-                        <Text style={styles.icon}>Thêm ngày đến hạn</Text>
-                        <Text style={styles.icon}>Lặp lại</Text>
-                        <Text style={styles.icon}>Thêm ghi chú</Text>
-                    </View>
 
+                    <TouchableOpacity style={styles.addMyDay} onPress={handleAddReminder}>
+                        <Image
+                            source={isAddReminder
+                                ? require('../../assets/icons8-bell-48-blue.png')
+                                : require('../../assets/icons8-bell-48.png')
+                            }
+                            style={styles.iconSun}
+                        />
+                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Nhắc tôi</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.addMyDay} onPress={handleAddDueDate}>
+                        <Image
+                            source={isAddDueDate
+                                ? require('../../assets/icons8-date-48-blue.png')
+                                : require('../../assets/icons8-date-48.png')
+                            }
+                            style={styles.iconSun}
+                        />
+                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm ngày đến hạn</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.addMyDay} onPress={handleRepeat}>
+                        <Image
+                            source={isRepeat
+                                ? require('../../assets/icons8-repeat-48-blue.png')
+                                : require('../../assets/icons8-repeat-48.png')
+                            }
+                            style={styles.iconSun}
+                        />
+                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Lặp lại</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
+
+                    <View style={styles.addNote}>
+                        <TextInput
+                            onPressIn={() => setIsCompleteButtonVisible(true)}
+                            multiline={true}
+                            placeholder="Thêm ghi chú"
+                            style={[styles.addMyDayText, { color: '#656363', flex: 1 }]}>
+                        </TextInput>
+                    </View>
+                    <View style={{ height: 200 }} />
                 </View>
             </ScrollView >
 
@@ -116,13 +205,31 @@ const styles = StyleSheet.create({
     },
 
     content: {
+        flex: 1,
         marginLeft: 20,
         marginRight: 20,
     },
-
-    icon: {
-        height: 30,
+    addMyDay: {
+        height: 55,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 5,
     },
+    iconSun: {
+        width: 25,
+        height: 25,
+        marginRight: 10,
+    },
+    addMyDayText: {
+        fontSize: 15,
+    },
+    addNote: {
+        minHeight: 100,
+        flexDirection: 'row',
+        marginLeft: 5,
+        marginTop: 10,
+    },
+
 
     footer: {
         height: 45,
