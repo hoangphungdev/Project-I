@@ -30,16 +30,12 @@ const TaskList = () => {
     return (
         <View style={styles.container}>
             <View style={styles.TouchableOpacity}>
-                <TouchableOpacity
-                    onPress={handlePress}
-                >
-                    <Text style={styles.header}>
-                        <Image
-                            source={require('../../assets/icons8-less-than-50.png')}
-                            style={styles.iconLessThan}
-                        />
-                        Danh sách
-                    </Text>
+                <TouchableOpacity style={styles.header}
+                    onPress={handlePress} >
+                    <Image
+                        source={require('../../assets/icons8-less-than-50.png')}
+                        style={styles.iconLessThan} />
+                    <Text style={styles.headerText}>Danh sách</Text>
                 </TouchableOpacity>
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -76,9 +72,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     header: {
+        marginTop: 13,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    headerText: {
         fontSize: 20,
         color: '#EF6363',
-        marginTop: 13,
     },
     subHeader: {
         fontSize: 30,

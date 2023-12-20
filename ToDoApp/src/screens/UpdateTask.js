@@ -9,7 +9,7 @@ import Step from '../components/Common/Step';
 
 const UpdateTask = () => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [newTask, setNewTask] = useState('');
+    const [TaskName, setTaskName] = useState('Đi học');
     const [isPressed, setIsPressed] = useState(false);
     const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
     const [currentState, setCurrentState] = useState('default');
@@ -19,6 +19,7 @@ const UpdateTask = () => {
     const [isAddReminder, setIsAddReminder] = useState(false);
     const [isAddDueDate, setIsAddDueDate] = useState(false);
     const [isRepeat, setIsRepeat] = useState(false);
+
 
     const handlePress = () => {
         console.log('Return to Home Screen');
@@ -31,6 +32,7 @@ const UpdateTask = () => {
             console.log('New step: ', newStep);
             setSteps(prevSteps => [...prevSteps, newStep]);
         }
+        setNewStep('');
         Keyboard.dismiss();
     }
 
@@ -69,7 +71,7 @@ const UpdateTask = () => {
         <View style={styles.container}>
 
             <View style={styles.header}>
-                <TouchableOpacity
+                <TouchableOpacity stype={{ flexDirection: 'row', alignItems: 'center' }}
                     style={{ flexDirection: 'row', alignItems: 'center' }}
                     onPress={handlePress}>
                     <Image
@@ -79,10 +81,14 @@ const UpdateTask = () => {
                     <Text style={styles.headerText}>Quan trọng</Text>
                     <View style={{ flex: 1 }} ></View>
                     {isCompleteButtonVisible && (
-                        <Button title="Hoàn thành" onPress={handleCompleteAddStep} />
+                        <TouchableOpacity style={{ marginRight: 10 }}
+                            onPress={handleCompleteAddStep} >
+                            <Text style={styles.headerText}>Hoàn thành</Text>
+                        </TouchableOpacity>
                     )}
                 </TouchableOpacity>
-                <AddNameTask TaskName="Đi học " />
+                <AddNameTask TaskName={TaskName}
+                    setTaskName={setTaskName} />
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
@@ -161,7 +167,7 @@ const UpdateTask = () => {
                             onPressIn={() => setIsCompleteButtonVisible(true)}
                             multiline={true}
                             placeholder="Thêm ghi chú"
-                            style={[styles.addMyDayText, { color: '#656363', flex: 1 }]}>
+                            style={[styles.addMyDayText, { color: '#656363', flex: 1, outlineWidth: 0, }]}>
                         </TextInput>
                     </View>
                     <View style={{ height: 200 }} />

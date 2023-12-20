@@ -19,8 +19,9 @@ const Step = ({ StepName }) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <TextInput style={[styles.text, { flex: 1 }]}
-                onChangeText={setStepName}>{stepName}</TextInput>
+            <TextInput style={styles.text}
+                onChangeText={setStepName}
+                value={StepName} />
             <TouchableOpacity >
                 <Image
                     source={require('../../../assets/icons8-ellipsis-30.png')}
@@ -34,6 +35,7 @@ const Step = ({ StepName }) => {
 
 const styles = StyleSheet.create({
     Step: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',

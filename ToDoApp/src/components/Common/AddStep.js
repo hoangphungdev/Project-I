@@ -52,6 +52,8 @@ const styles = StyleSheet.create({
     textAddStep: {
         fontSize: 15,
         marginLeft: 10,
+        flex: 1,
+        outlineWidth: 0,
     },
 });
 

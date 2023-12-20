@@ -14,11 +14,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        <RootStack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <RootStack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-        <RootStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-        <RootStack.Screen name="UpdateTask" component={UpdateTask} options={{ headerShown: false }} />
         <RootStack.Screen name="TaskList" component={TaskList} options={{ headerShown: false }} />
+        <RootStack.Screen name="UpdateTask" component={UpdateTask} options={{ headerShown: false }} />
+
+        <RootStack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <RootStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+        <RootStack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet, TextInput, View } from 'react-native';
 
-const AddNameTask = ({ TaskName }) => {
+const AddNameTask = (props) => {
     const [isComplete, setComplete] = useState(false);
     const [isImportant, setImportant] = useState(false);
 
@@ -24,7 +24,9 @@ const AddNameTask = ({ TaskName }) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <TextInput style={styles.text}>{TaskName}</TextInput>
+            <TextInput style={styles.text}
+                value={props.TaskName}
+                onChangeText={text => props.setTaskName(text)} />
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant
@@ -62,7 +64,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         margin: 5,
         flex: 1,
-        fontWeight: 'bold',
+        fontWeight: '500',
+        outlineWidth: 0,
     },
 });
 

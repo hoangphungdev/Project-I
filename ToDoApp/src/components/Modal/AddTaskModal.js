@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 10,
         padding: 10,
         marginTop: 1,
-        height: 60,
+        height: 65,
         shadowColor: "#000",
         shadowOffset: {
             width: 2,
@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 20,
         marginLeft: 10,
+        flex: 1,
+        outlineWidth: 0,
     },
     iconCircle: {
         width: 27,
