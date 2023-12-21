@@ -1,10 +1,50 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { createNewAccount } from '../database/UserDAO';
+import { useNavigation } from '@react-navigation/native';
+import { checkIfAccountExists } from '../database/UserDAO';
 
 const SignIn = () => {
+    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [enteredPassword, setEnteredPassword] = useState('');
+
+    const register = async () => {
+        // Check if password and enteredPassword are the same
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Email không đúng định dạng");
+            return;
+        }
+
+        // Check if password is between 6 and 18 characters
+        if (password.length < 6 || password.length > 18) {
+            alert("Mật khẩu phải từ 6 đến 18 ký tự");
+            return;
+        }
+
+        // Check if password and enteredPassword are the same
+        if (password !== enteredPassword) {
+            alert("Mật khẩu nhập lại không khớp");
+            return;
+        }
+
+        const exists = await checkIfAccountExists(email);
+        if (exists) {
+            alert("Tài khoản đã tồn tại");
+            return;
+        }
+
+        try {
+            await createNewAccount({ email: email, password: password });
+            alert("Đăng ký thành công");
+            navigation.navigate('SignIn');
+        } catch (error) {
+            alert(`Đăng ký thất bại: ${error.message}`);
+        }
+
+    }
 
     return (
         <View style={styles.container}>
@@ -25,7 +65,7 @@ const SignIn = () => {
                     onChangeText={text => setEnteredPassword(text)}
                     placeholder="Nhập lại mật khẩu"
                     secureTextEntry={true} />
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={register}>
                     <Text style={styles.buttonText}>Đăng ký</Text>
                 </TouchableOpacity>
 

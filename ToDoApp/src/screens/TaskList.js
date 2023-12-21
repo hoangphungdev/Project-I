@@ -40,7 +40,7 @@ const TaskList = () => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.subHeader}>Quan trọng</Text>
-                <Task taskName="Đi học là một điều vui là một điều vui" />
+                <Task taskName="Đi học" />
                 <Task taskName="Đi học" />
                 <Task taskName="Đi học" />
             </ScrollView>
