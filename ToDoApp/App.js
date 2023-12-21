@@ -16,8 +16,8 @@ export default function App() {
     <UIProvider>
       <NavigationContainer>
         <RootStack.Navigator>
-          <RootStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
           <RootStack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+          <RootStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
           <RootStack.Screen name="TaskList" component={TaskList} options={{ headerShown: false }} />
           <RootStack.Screen name="UpdateTask" component={UpdateTask} options={{ headerShown: false }} />
           <RootStack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />

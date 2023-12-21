@@ -4,27 +4,29 @@ import { createNewAccount } from '../database/UserDAO';
 import { useNavigation } from '@react-navigation/native';
 import { checkIfAccountExists } from '../database/UserDAO';
 
+
 const SignIn = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [enteredPassword, setEnteredPassword] = useState('');
 
+    //Hàm đăng ký
     const register = async () => {
-        // Check if password and enteredPassword are the same
+        // Kiểm tra email có đúng định dạng không
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert("Email không đúng định dạng");
             return;
         }
 
-        // Check if password is between 6 and 18 characters
+        // Kiểm tra mật khẩu có từ 6 đến 18 ký tự không
         if (password.length < 6 || password.length > 18) {
             alert("Mật khẩu phải từ 6 đến 18 ký tự");
             return;
         }
 
-        // Check if password and enteredPassword are the same
+        // Kiểm tra mật khẩu nhập lại có khớp không
         if (password !== enteredPassword) {
             alert("Mật khẩu nhập lại không khớp");
             return;
@@ -48,6 +50,14 @@ const SignIn = () => {
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.return}
+                onPress={() => { navigation.navigate('SignIn') }}>
+                <Image
+                    source={require('../../assets/icons8-less-than-50-blue.png')}
+                    style={styles.iconLessThan}
+                />
+                <Text style={styles.returnText}>Đăng nhập</Text>
+            </TouchableOpacity>
             <Image
                 source={require('../../assets/MS-To-Do-Icon.png')}
                 style={styles.logo}
@@ -78,6 +88,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    return: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 25,
+        marginLeft: 20,
+    },
+    iconLessThan: {
+        width: 25,
+        height: 25,
+    },
+    returnText: {
+        fontSize: 20,
+        color: '#339AF0',
     },
     logo: {
         width: 100,

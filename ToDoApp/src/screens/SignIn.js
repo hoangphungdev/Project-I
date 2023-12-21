@@ -1,9 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { checkAccount } from '../database/UserDAO';
+import { UIContext } from '../../UIContext.js';
 
 const SignIn = () => {
+    const { setUserId } = React.useContext(UIContext);
+    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        //Hàm tự động đăng nhập
+        const autoLogin = async () => {
+            const email = await AsyncStorage.getItem('userEmail');
+            const password = await AsyncStorage.getItem('userPassword');
+
+            if (email && password) {
+                const userId = await checkAccount({ email, password });
+                if (userId) {
+                    setUserId(userId);
+                    alert("Đăng nhập thành công");
+                }
+            }
+        };
+
+        autoLogin();
+    }, []);
+
+    //Hàm đăng nhập
+    const handleLogin = async () => {
+        // Kiểm tra email có đúng định dạng không
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Email không đúng định dạng");
+            return;
+        }
+
+        // Kiểm tra mật khẩu có từ 6 đến 18 ký tự không
+        if (password.length < 6 || password.length > 18) {
+            alert("Mật khẩu phải từ 6 đến 18 ký tự");
+            return;
+        }
+
+        try {
+            const userId = await checkAccount({ email: email, password: password });
+            if (userId) {
+                // Lưu userId vào UIContext
+                setUserId(userId);
+                // Lưu email và password vào AsyncStorage
+                await AsyncStorage.setItem('userEmail', email);
+                await AsyncStorage.setItem('userPassword', password);
+            } else {
+                console.error("Error: Invalid email or password");
+                alert("Email hoặc mật khẩu không đúng");
+            }
+            alert("Đăng nhập thành công");
+            navigation.navigate('TaskList');
+        } catch (error) {
+            alert(`Đăng nhập thất bại: ${error.message}`);
+        }
+
+    }
+
     return (
         <View style={styles.container}>
             <Image
@@ -19,7 +79,8 @@ const SignIn = () => {
                     onChangeText={text => setPassword(text)}
                     placeholder="Mật khẩu"
                     secureTextEntry={true} />
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button}
+                    onPress={handleLogin}>
                     <Text style={styles.buttonText}>Đăng nhập</Text>
                 </TouchableOpacity>
 
@@ -32,7 +93,8 @@ const SignIn = () => {
                 </View>
 
 
-                <TouchableOpacity style={styles.signupButton}>
+                <TouchableOpacity style={styles.signupButton}
+                    onPress={() => { navigation.navigate('SignUp') }}>
                     <Text style={styles.signupButtonText}>Đăng ký</Text>
                 </TouchableOpacity>
 
