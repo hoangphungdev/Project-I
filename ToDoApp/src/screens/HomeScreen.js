@@ -1,22 +1,36 @@
 import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { UIContext } from '../../UIContext.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const HomeScreen = () => {
+    const navigation = useNavigation();
+    const { setUserId } = useContext(UIContext);
 
+    const logout = async () => {
+        setUserId(null);
+        await AsyncStorage.setItem('userEmail', '');
+        await AsyncStorage.setItem('userPassword', '');
+        navigation.navigate('SignIn');
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity>
-                    <Text style={styles.headerText}>Tài khoản</Text>
+                <TouchableOpacity onPress={logout}>
+                    <Text style={styles.headerText}>Đăng xuất</Text>
                 </TouchableOpacity>
                 <View style={{ flex: 1 }} ></View>
-                <Image
-                    source={require('../../assets/icons8-search-48.png')}
-                    style={styles.iconSearch}
-                />
+                <TouchableOpacity>
+                    <Image
+                        source={require('../../assets/icons8-search-48.png')}
+                        style={styles.iconSearch}
+                    />
+                </TouchableOpacity>
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
             <ScrollView >
@@ -48,7 +62,8 @@ const HomeScreen = () => {
                         />
                         <Text style={[styles.textList, { color: '#656363' }]}>Đã hoàn thành</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.list} >
+                    <TouchableOpacity style={styles.list}
+                        onPress={() => { navigation.navigate('TaskList') }}>
                         <Image
                             source={
                                 require('../../assets/icons8-task-48.png')
@@ -68,6 +83,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
+        backgroundColor: 'white',
     },
     header: {
         marginTop: 30,

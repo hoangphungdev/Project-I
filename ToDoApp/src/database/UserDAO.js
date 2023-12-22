@@ -1,35 +1,33 @@
 import { fb_db } from '../../firebaseConfig'
-import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where }
+    from "firebase/firestore";
 
 export const checkIfAccountExists = async (email) => {
-    const querySnapshot = await getDocs(collection(fb_db, "users"));
-    let exists = false;
-    querySnapshot.forEach((doc) => {
-        if (doc.data().email === email) {
-            exists = true;
-        }
-    });
-    return exists;
+    const q = query(collection(fb_db, "users"), where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
 }
 
 export const createNewAccount = async (props) => {
     try {
-        await addDoc(collection(fb_db, "users"), {
+        const docRef = await addDoc(collection(fb_db, "users"), {
             email: props.email,
             password: props.password,
         });
+        return docRef.id;
     } catch (e) {
         console.error("Error adding document: ", e);
     }
 }
 
 export const checkAccount = async (props) => {
-    const querySnapshot = await getDocs(collection(fb_db, "users"));
+    const q = query(collection(fb_db, "users"),
+        where("email", "==", props.email),
+        where("password", "==", props.password));
+    const querySnapshot = await getDocs(q);
     let userId = null;
     querySnapshot.forEach((doc) => {
-        if (doc.data().email === props.email && doc.data().password === props.password) {
-            userId = doc.id;
-        }
+        userId = doc.id;
     });
     return userId;
 }

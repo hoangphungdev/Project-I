@@ -167,7 +167,7 @@ const UpdateTask = () => {
                             onPressIn={() => setIsCompleteButtonVisible(true)}
                             multiline={true}
                             placeholder="Thêm ghi chú"
-                            style={[styles.addMyDayText, { color: '#656363', flex: 1, outlineWidth: 0, }]}>
+                            style={[styles.addMyDayText, { color: '#656363', flex: 1 }]}>
                         </TextInput>
                     </View>
                     <View style={{ height: 200 }} />
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 5,
         marginTop: 10,
+        outlineWidth: 0,
     },
 
 

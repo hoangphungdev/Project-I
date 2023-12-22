@@ -18,10 +18,10 @@ const SignIn = () => {
             const password = await AsyncStorage.getItem('userPassword');
 
             if (email && password) {
-                const userId = await checkAccount({ email, password });
+                const userId = await checkAccount({ email: email, password: password });
                 if (userId) {
                     setUserId(userId);
-                    alert("Đăng nhập thành công");
+                    navigation.navigate('HomeScreen');
                 }
             }
         };
@@ -46,6 +46,7 @@ const SignIn = () => {
 
         try {
             const userId = await checkAccount({ email: email, password: password });
+            console.log(userId);
             if (userId) {
                 // Lưu userId vào UIContext
                 setUserId(userId);
@@ -55,9 +56,9 @@ const SignIn = () => {
             } else {
                 console.error("Error: Invalid email or password");
                 alert("Email hoặc mật khẩu không đúng");
+                return;
             }
-            alert("Đăng nhập thành công");
-            navigation.navigate('TaskList');
+            navigation.navigate('HomeScreen');
         } catch (error) {
             alert(`Đăng nhập thất bại: ${error.message}`);
         }

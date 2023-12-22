@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import { createNewAccount } from '../database/UserDAO';
 import { useNavigation } from '@react-navigation/native';
 import { checkIfAccountExists } from '../database/UserDAO';
-
+import { createNewTaskList } from '../database/TaskListDao';
 
 const SignIn = () => {
     const navigation = useNavigation();
@@ -39,7 +39,9 @@ const SignIn = () => {
         }
 
         try {
-            await createNewAccount({ email: email, password: password });
+            const userId = await createNewAccount({ email: email, password: password });
+            await createNewTaskList(userId);
+
             alert("Đăng ký thành công");
             navigation.navigate('SignIn');
         } catch (error) {

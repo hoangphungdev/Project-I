@@ -1,5 +1,5 @@
-import { Modal, View, TextInput } from 'react-native'
-import React from 'react'
+import { Modal, View, TextInput, Text } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { KeyboardAvoidingView, Platform } from 'react-native';
@@ -7,6 +7,21 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 
 
 export const AddTaskModal = (props) => {
+    const [canSave, setCanSave] = useState(false);
+
+    const handleSave = () => {
+        if (canSave) {
+            setCanSave(false);
+            props.handleSaveTask();
+        }
+    };
+
+    useEffect(() => {
+        if (!props.modalVisible) {
+            setCanSave(true);
+        }
+    }, [props.modalVisible]);
+
     return (
         <Modal
             animationType="slide"
@@ -14,9 +29,10 @@ export const AddTaskModal = (props) => {
             visible={props.modalVisible}
             style={{ flex: 1 }}
         >
+
             <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={props.handleSaveTask}
+                onPress={handleSave}
                 activeOpacity={1}
             >
                 <KeyboardAvoidingView
@@ -45,8 +61,10 @@ export const AddTaskModal = (props) => {
 const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
+        flexDirection: 'column',
         justifyContent: 'flex-end',
     },
+
     modalView: {
         flexDirection: 'row',
         alignItems: 'center',

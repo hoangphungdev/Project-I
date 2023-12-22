@@ -1,49 +1,75 @@
 import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
 import Task from '../components/Common/Task';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
-
+import { useNavigation } from '@react-navigation/native';
+import { getAllTasks, createNewTask } from '../database/TaskDao';
+import { UIContext } from '../../UIContext.js';
+import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao';
+import { getTasksByIds } from '../database/TaskDao';
 
 
 const TaskList = () => {
+    const navigation = useNavigation();
+    const { userId } = React.useContext(UIContext);
     const [modalVisible, setModalVisible] = useState(false);
+    const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const lines = new Array(9).fill(0);
 
-    const handlePress = () => {
-        console.log('Return to Home Screen');
-    };
+    useEffect(() => {
+        const fetchTasks = async () => {
+            setIsLoading(true); // set loading state to true when fetching starts
+            const task_ids = await getTaskListsByUserId(userId);
+            if (task_ids.length === 0) return;
+
+            const allTasks = await getTasksByIds(task_ids);
+            const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
+            setTasks(sortedTasks);
+            setIsLoading(false); // set loading state to false when fetching ends
+        };
+
+        fetchTasks();
+    }, [newTask]);
 
     const handleAddTask = () => {
         setNewTask('');
         setModalVisible(true);
     };
 
-    const handleSaveTask = () => {
+    const handleSaveTask = async () => {
         if (newTask.length > 0) {
-            console.log('New task: ', newTask);
+            const newTaskObj = await createNewTask({ name: newTask });
+            await addTaskIdToTaskList({ user_id: userId, task_id: newTaskObj });
+            setNewTask('');
         }
         setModalVisible(false);
     };
     return (
         <View style={styles.container}>
-            <View style={styles.TouchableOpacity}>
-                <TouchableOpacity style={styles.header}
-                    onPress={handlePress} >
-                    <Image
-                        source={require('../../assets/icons8-less-than-50.png')}
-                        style={styles.iconLessThan} />
-                    <Text style={styles.headerText}>Danh sách</Text>
-                </TouchableOpacity>
-            </View>
+
+            <TouchableOpacity style={styles.header}
+                onPress={() => { navigation.navigate('HomeScreen'); }} >
+                <Image
+                    source={require('../../assets/icons8-less-than-50.png')}
+                    style={styles.iconLessThan} />
+                <Text style={styles.headerText}>Danh sách</Text>
+            </TouchableOpacity>
+
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.subHeader}>Quan trọng</Text>
-                <Task taskName="Đi học" />
-                <Task taskName="Đi học" />
-                <Task taskName="Đi học" />
+                <Text style={styles.subHeader}>Tác vụ</Text>
+                {tasks.map((task, index) => (
+                    <Task key={index} taskName={task.name} />
+                ))}
+                {lines.map((_, index) => (
+                    <View key={index} style={{ height: 0.5, width: '100%', backgroundColor: '#656363', marginTop: 55 }} />
+                ))}
             </ScrollView>
+
             <TouchableOpacity
                 onPress={handleAddTask}
                 style={styles.button}>
