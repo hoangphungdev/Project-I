@@ -6,23 +6,29 @@ import { ScrollView } from 'react-native';
 import AddNameTask from '../components/Common/AddNameTask';
 import AddStep from '../components/Common/AddStep';
 import Step from '../components/Common/Step';
+import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const UpdateTask = () => {
+    const route = useRoute();
+    const task = route.params.task;
+    const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
-    const [TaskName, setTaskName] = useState('Đi học');
+    const [TaskName, setTaskName] = useState(task.name);
     const [isPressed, setIsPressed] = useState(false);
     const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
     const [currentState, setCurrentState] = useState('default');
     const [newStep, setNewStep] = useState('');
-    const [steps, setSteps] = useState([]);
-    const [isAddMyDay, setIsAddMyDay] = useState(false);
-    const [isAddReminder, setIsAddReminder] = useState(false);
-    const [isAddDueDate, setIsAddDueDate] = useState(false);
-    const [isRepeat, setIsRepeat] = useState(false);
+    const [steps, setSteps] = useState(task.step);
+    const [isAddMyDay, setIsAddMyDay] = useState(task.myDay);
+    const [isAddReminder, setIsAddReminder] = useState(task.timeReminder);
+    const [isAddDueDate, setIsAddDueDate] = useState(task.dueDate);
+    const [isRepeat, setIsRepeat] = useState(task.repeat);
 
+    console.log(task);
 
     const handlePress = () => {
-        console.log('Return to Home Screen');
+        navigation.navigate('TaskList');
     };
 
     const handleCompleteAddStep = () => {
@@ -78,7 +84,7 @@ const UpdateTask = () => {
                         source={require('../../assets/icons8-less-than-50-blue.png')}
                         style={styles.iconLessThan}
                     />
-                    <Text style={styles.headerText}>Quan trọng</Text>
+                    <Text style={styles.headerText}>Tác vụ</Text>
                     <View style={{ flex: 1 }} ></View>
                     {isCompleteButtonVisible && (
                         <TouchableOpacity style={{ marginRight: 10 }}
@@ -98,7 +104,7 @@ const UpdateTask = () => {
                     {steps.map((step, index) => (
                         <Step key={index} StepName={step} />
                     ))}
-                    <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
+                    {/* <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} /> */}
                     <AddStep
                         isPressed={isPressed}
                         setIsPressed={setIsPressed}
@@ -167,7 +173,7 @@ const UpdateTask = () => {
                             onPressIn={() => setIsCompleteButtonVisible(true)}
                             multiline={true}
                             placeholder="Thêm ghi chú"
-                            style={[styles.addMyDayText, { color: '#656363', flex: 1 }]}>
+                            style={[styles.addMyDayText, { color: '#656363', outlineWidth: 0, flex: 1 }]}>
                         </TextInput>
                     </View>
                     <View style={{ height: 200 }} />
@@ -234,7 +240,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 5,
         marginTop: 10,
-        outlineWidth: 0,
+
     },
 
 

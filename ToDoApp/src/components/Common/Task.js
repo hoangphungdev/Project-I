@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const Task = ({ taskName }) => {
+const Task = (props) => {
     const [isComplete, setComplete] = useState(false);
     const [isImportant, setImportant] = useState(false);
-
+    const navigation = useNavigation();
+    const task = props.task;
 
     const handlePressComplete = () => {
         setComplete(!isComplete);
@@ -15,7 +17,7 @@ const Task = ({ taskName }) => {
     };
 
     const handlePress = () => {
-        console.log('Task is pressed');
+        navigation.navigate('UpdateTask', { task: task });
     }
 
     return (
@@ -30,7 +32,7 @@ const Task = ({ taskName }) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <Text style={styles.text}>{taskName}</Text>
+            <Text style={styles.text}>{props.taskName}</Text>
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant

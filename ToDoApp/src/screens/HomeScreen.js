@@ -21,8 +21,13 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={logout}>
-                    <Text style={styles.headerText}>Đăng xuất</Text>
+                <TouchableOpacity
+                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                    onPress={logout}>
+                    <Image
+                        source={require('../../assets/icons8-less-than-50-blue.png')}
+                        style={styles.iconLessThan} />
+                    <Text style={{ fontSize: 20, color: '#339AF0', }}>Đăng xuất</Text>
                 </TouchableOpacity>
                 <View style={{ flex: 1 }} ></View>
                 <TouchableOpacity>
@@ -73,8 +78,20 @@ const HomeScreen = () => {
                         <Text style={[styles.textList, { color: '#656363' }]}>Tác vụ</Text>
                     </TouchableOpacity>
                     <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
+
+
                 </View>
+
             </ScrollView>
+
+            <TouchableOpacity onPress={() => { navigation.navigate('Pomodoro') }}
+                style={styles.pomodoro}>
+                <Image
+                    source={require('../../assets/icons8-clock-100.png')
+                    }
+                    style={{ height: 100, width: 100 }}
+                />
+            </TouchableOpacity>
         </View >
     );
 }
@@ -93,10 +110,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    iconLessThan: {
+        width: 25,
+        height: 25,
+    },
     iconSearch: {
         width: 25,
         height: 25,
     },
+
     list: {
         height: 55,
         flexDirection: 'row',
@@ -112,6 +134,11 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '500',
     },
+    pomodoro: {
+        alignItems: 'center',
+        marginBottom: 10,
+    }
+
 });
 
 export default HomeScreen;

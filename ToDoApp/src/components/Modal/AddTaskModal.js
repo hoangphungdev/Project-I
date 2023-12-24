@@ -7,20 +7,6 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 
 
 export const AddTaskModal = (props) => {
-    const [canSave, setCanSave] = useState(false);
-
-    const handleSave = () => {
-        if (canSave) {
-            setCanSave(false);
-            props.handleSaveTask();
-        }
-    };
-
-    useEffect(() => {
-        if (!props.modalVisible) {
-            setCanSave(true);
-        }
-    }, [props.modalVisible]);
 
     return (
         <Modal
@@ -32,7 +18,7 @@ export const AddTaskModal = (props) => {
 
             <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={handleSave}
+                onPress={props.handleSaveTask}
                 activeOpacity={1}
             >
                 <KeyboardAvoidingView
