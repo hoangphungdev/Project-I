@@ -8,8 +8,14 @@ import AddStep from '../components/Common/AddStep';
 import Step from '../components/Common/Step';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import { updateTask } from '../database/TaskDao';
+import { deleteTask } from '../database/TaskDao';
+import { removeTaskIdFromTaskList } from '../database/TaskListDao';
+import { UIContext } from '../../UIContext.js';
+
 
 const UpdateTask = () => {
+    const { userId } = React.useContext(UIContext);
     const route = useRoute();
     const task = route.params.task;
     const navigation = useNavigation();
@@ -19,31 +25,33 @@ const UpdateTask = () => {
     const [isCompleteButtonVisible, setIsCompleteButtonVisible] = useState(false);
     const [currentState, setCurrentState] = useState('default');
     const [newStep, setNewStep] = useState('');
-    const [steps, setSteps] = useState(task.step);
+    const [steps, setSteps] = useState(task.steps);
     const [isAddMyDay, setIsAddMyDay] = useState(task.myDay);
     const [isAddReminder, setIsAddReminder] = useState(task.timeReminder);
     const [isAddDueDate, setIsAddDueDate] = useState(task.dueDate);
     const [isRepeat, setIsRepeat] = useState(task.repeat);
 
-    console.log(task);
+    const originalName = task.name;
 
-    const handlePress = () => {
-        navigation.navigate('TaskList');
-    };
-
-    const handleCompleteAddStep = () => {
+    const handleCompleteAddStep = async () => {
         setIsPressed(false);
         setIsCompleteButtonVisible(false);
         if (newStep.length > 0) {
             console.log('New step: ', newStep);
             setSteps(prevSteps => [...prevSteps, newStep]);
+
+            console.log(task.id);
+            await updateTask({ id: task.id, step: newStep });
         }
         setNewStep('');
         Keyboard.dismiss();
     }
 
-    const handleCompleteAddTask = () => {
+    const handleCompleteAddTask = async () => {
         setIsCompleteButtonVisible(false);
+        if (TaskName !== originalName) {
+            await updateTask({ id: task.id, name: TaskName });
+        }
         Keyboard.dismiss();
     }
 
@@ -64,13 +72,26 @@ const UpdateTask = () => {
     }
     const handleComplete = () => {
         switch (currentState) {
-            case 'state1':
-                // Perform action for state1
+            case 'addStep':
+                handleCompleteAddStep();
                 break;
-            case 'state2':
-                // Perform action for state2
+            case 'addNameTask':
+                handleCompleteAddTask();
                 break;
+
         }
+    }
+
+    const handleDeleteStep = async (step) => {
+        const newSteps = steps.filter(item => item !== step);
+        setSteps(newSteps);
+        await updateTask({ id: task.id, step: step });
+    }
+
+    const handleDeleteTask = async () => {
+        await deleteTask(task.id);
+        await removeTaskIdFromTaskList({ user_id: userId, task_id: task.id });
+        navigation.navigate('TaskList');
     }
 
     return (
@@ -79,7 +100,7 @@ const UpdateTask = () => {
             <View style={styles.header}>
                 <TouchableOpacity stype={{ flexDirection: 'row', alignItems: 'center' }}
                     style={{ flexDirection: 'row', alignItems: 'center' }}
-                    onPress={handlePress}>
+                    onPress={() => { navigation.navigate('TaskList') }}>
                     <Image
                         source={require('../../assets/icons8-less-than-50-blue.png')}
                         style={styles.iconLessThan}
@@ -88,12 +109,17 @@ const UpdateTask = () => {
                     <View style={{ flex: 1 }} ></View>
                     {isCompleteButtonVisible && (
                         <TouchableOpacity style={{ marginRight: 10 }}
-                            onPress={handleCompleteAddStep} >
+                            onPress={handleComplete} >
                             <Text style={styles.headerText}>Hoàn thành</Text>
                         </TouchableOpacity>
                     )}
                 </TouchableOpacity>
                 <AddNameTask TaskName={TaskName}
+                    taskId={task.id}
+                    isCompleted={task.completed}
+                    isImportant={task.important}
+                    setIsCompleteButtonVisible={setIsCompleteButtonVisible}
+                    setCurrentState={setCurrentState}
                     setTaskName={setTaskName} />
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
@@ -108,6 +134,7 @@ const UpdateTask = () => {
                     <AddStep
                         isPressed={isPressed}
                         setIsPressed={setIsPressed}
+                        setCurrentState={setCurrentState}
                         setIsCompleteButtonVisible={setIsCompleteButtonVisible}
                         setNewStep={setNewStep}
                     />
@@ -185,10 +212,12 @@ const UpdateTask = () => {
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.footerText}>Đã thêm vài giây trước</Text>
                 </View>
-                <Image
-                    source={require('../../assets/icons8-delete-48.png')}
-                    style={styles.iconDelete}
-                />
+                <TouchableOpacity onPress={handleDeleteTask}>
+                    <Image
+                        source={require('../../assets/icons8-delete-48.png')}
+                        style={styles.iconDelete}
+                    />
+                </TouchableOpacity>
             </View>
         </View >
 

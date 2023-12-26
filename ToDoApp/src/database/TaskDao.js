@@ -1,12 +1,12 @@
 import { fb_db } from '../../firebaseConfig'
-import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, arrayUnion } from "firebase/firestore";
 
 
 export const createNewTask = async (props) => {
     try {
         const docRef = await addDoc(collection(fb_db, "tasks"), {
             name: props.name,
-            step: [],
+            steps: [],
             myDay: false,
             important: false,
             completed: false,
@@ -22,18 +22,40 @@ export const createNewTask = async (props) => {
 }
 
 export const updateTask = async (props) => {
+    console.log(props);
     const taskRef = doc(fb_db, "tasks", props.id);
-    await updateDoc(taskRef, {
-        name: props.name,
-        step: props.step,
-        myDay: props.myDay,
-        important: props.important,
-        completed: props.completed,
-        timeReminder: props.timeReminder,
-        dueDate: props.dueDate,
-        repeat: props.repeat,
-        note: props.note,
-    });
+
+    let updateObject = {};
+
+    if (props.name !== undefined) {
+        updateObject.name = props.name;
+    }
+    if (props.step !== undefined) {
+        updateObject.steps = arrayUnion(props.step);
+    }
+    if (props.myDay !== undefined) {
+        updateObject.myDay = props.myDay;
+    }
+    if (props.important !== undefined) {
+        updateObject.important = props.important;
+    }
+    if (props.completed !== undefined) {
+        updateObject.completed = props.completed;
+    }
+    if (props.timeReminder !== undefined) {
+        updateObject.timeReminder = props.timeReminder;
+    }
+    if (props.dueDate !== undefined) {
+        updateObject.dueDate = props.dueDate;
+    }
+    if (props.repeat !== undefined) {
+        updateObject.repeat = props.repeat;
+    }
+    if (props.note !== undefined) {
+        updateObject.note = props.note;
+    }
+
+    await updateDoc(taskRef, updateObject);
 }
 
 export const deleteTask = async (id) => {

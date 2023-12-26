@@ -5,12 +5,11 @@ import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
 import Task from '../components/Common/Task';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createNewTask } from '../database/TaskDao';
 import { UIContext } from '../../UIContext.js';
 import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao';
 import { getTasksByIds } from '../database/TaskDao';
-
 
 const TaskList = () => {
     const navigation = useNavigation();
@@ -19,18 +18,20 @@ const TaskList = () => {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState('');
 
-    useEffect(() => {
-        const fetchTasks = async () => {
-            const task_ids = await getTaskListsByUserId(userId);
-            if (task_ids.length === 0) return;
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchTasks = async () => {
+                const task_ids = await getTaskListsByUserId(userId);
+                if (task_ids.length === 0) return;
 
-            const allTasks = await getTasksByIds(task_ids);
-            const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
-            setTasks(sortedTasks);
-        };
+                const allTasks = await getTasksByIds(task_ids);
+                const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
+                setTasks(sortedTasks);
+            };
 
-        fetchTasks();
-    }, [newTask]);
+            fetchTasks();
+        }, [newTask])
+    );
 
     const handleAddTask = () => {
         setNewTask('');
@@ -59,7 +60,7 @@ const TaskList = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.subHeader}>Tác vụ</Text>
                 {tasks.map((task, index) => (
-                    <Task key={index} taskName={task.name} task={task} />
+                    <Task key={index} task={task} />
                 ))}
 
             </ScrollView>

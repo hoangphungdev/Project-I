@@ -9,6 +9,7 @@ const AddStep = (props) => {
         <TouchableOpacity style={styles.addStep} onPress={() => {
             props.setIsPressed(true);
             props.setIsCompleteButtonVisible(true);
+            props.setCurrentState('addStep');
             setTimeout(() => inputRef.current.focus(), 100);
         }}>
             {props.isPressed ? (

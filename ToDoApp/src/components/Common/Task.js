@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { updateTask } from '../../database/TaskDao';
 
 const Task = (props) => {
-    const [isComplete, setComplete] = useState(false);
-    const [isImportant, setImportant] = useState(false);
-    const navigation = useNavigation();
     const task = props.task;
+    const [isComplete, setComplete] = useState(task.completed);
+    const [isImportant, setImportant] = useState(task.important);
+    const navigation = useNavigation();
 
-    const handlePressComplete = () => {
-        setComplete(!isComplete);
+    const handlePressComplete = async () => {
+        const checked = !isComplete;
+        setComplete(checked);
+        await updateTask({ id: task.id, completed: checked });
     };
 
-    const handlePressImportant = () => {
-        setImportant(!isImportant);
+    const handlePressImportant = async () => {
+        const checked = !isImportant;
+        setImportant(checked);
+        await updateTask({ id: task.id, important: checked });
     };
 
     const handlePress = () => {
@@ -32,7 +37,7 @@ const Task = (props) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <Text style={styles.text}>{props.taskName}</Text>
+            <Text style={styles.text}>{props.task.name}</Text>
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant

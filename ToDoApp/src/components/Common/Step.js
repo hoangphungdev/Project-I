@@ -11,14 +11,18 @@ const Step = ({ StepName }) => {
 
     return (
         <View style={styles.Step}>
-            <TouchableOpacity onPress={handlePressComplete}>
+            {/* <TouchableOpacity onPress={handlePressComplete}>
                 <Image
                     source={isComplete
                         ? require('../../../assets/icons8-checked-48-gray.png')
                         : require('../../../assets/icons8-circle-48-gray.png')}
                     style={styles.iconCircle}
                 />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <Image
+                source={require('../../../assets/icons8-circle-48-gray.png')}
+                style={styles.iconCircle}
+            />
             <TextInput style={styles.text}
                 onChangeText={setStepName}
                 value={StepName} />

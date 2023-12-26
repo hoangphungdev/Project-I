@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet, TextInput, View } from 'react-native';
+import { updateTask } from '../../database/TaskDao';
 
 const AddNameTask = (props) => {
-    const [isComplete, setComplete] = useState(false);
-    const [isImportant, setImportant] = useState(false);
+    const [isComplete, setComplete] = useState(props.isCompleted);
+    const [isImportant, setImportant] = useState(props.isImportant);
 
 
-    const handlePressComplete = () => {
-        setComplete(!isComplete);
+    const handlePressComplete = async () => {
+        const checked = !isComplete;
+        setComplete(checked);
+        await updateTask({ id: props.taskId, completed: checked });
     };
 
-    const handlePressImportant = () => {
-        setImportant(!isImportant);
+    const handlePressImportant = async () => {
+        const checked = !isImportant;
+        setImportant(checked);
+        await updateTask({ id: props.taskId, important: checked });
     };
 
     return (
@@ -25,12 +30,16 @@ const AddNameTask = (props) => {
                 />
             </TouchableOpacity>
             <TextInput style={styles.text}
+                onFocus={() => {
+                    props.setIsCompleteButtonVisible(true)
+                    props.setCurrentState('addNameTask')
+                }}
                 value={props.TaskName}
                 onChangeText={text => props.setTaskName(text)} />
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant
-                        ? require('../../../assets/icons8-star-50-red.png')
+                        ? require('../../../assets/icons8-star-50-gray.png')
                         : require('../../../assets/icons8-star-50.png')}
                     style={styles.iconStar}
                 />
