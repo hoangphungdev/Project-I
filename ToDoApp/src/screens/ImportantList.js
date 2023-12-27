@@ -6,12 +6,12 @@ import { ScrollView } from 'react-native';
 import Task from '../components/Common/Task';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { createNewTask } from '../database/TaskDao';
+import { createNewImportantTask } from '../database/TaskDao';
 import { UIContext } from '../../UIContext.js';
 import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao';
-import { getTasksByIds } from '../database/TaskDao';
+import { getImportantTasksByIds } from '../database/TaskDao';
 
-const TaskList = () => {
+const ImportantList = () => {
     const navigation = useNavigation();
     const { userId } = React.useContext(UIContext);
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,10 +23,8 @@ const TaskList = () => {
             const fetchTasks = async () => {
                 const task_ids = await getTaskListsByUserId(userId);
                 if (task_ids.length === 0) return;
-
-                const allTasks = await getTasksByIds(task_ids);
-                const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
-                setTasks(sortedTasks);
+                const allTasks = await getImportantTasksByIds(task_ids);
+                setTasks(allTasks);
             };
 
             fetchTasks();
@@ -41,7 +39,7 @@ const TaskList = () => {
     const handleSaveTask = async () => {
         setModalVisible(false);
         if (newTask.length > 0) {
-            const newTaskObj = await createNewTask({ name: newTask });
+            const newTaskObj = await createNewImportantTask({ name: newTask });
             await addTaskIdToTaskList({ user_id: userId, task_id: newTaskObj });
             setNewTask('');
         }
@@ -52,15 +50,15 @@ const TaskList = () => {
             <TouchableOpacity style={styles.header}
                 onPress={() => { navigation.navigate('HomeScreen'); }} >
                 <Image
-                    source={require('../../assets/icons8-less-than-50-white.png')}
+                    source={require('../../assets/icons8-less-than-50-red.png')}
                     style={{ width: 25, height: 25, }} />
                 <Text style={styles.headerText}>Danh sách</Text>
             </TouchableOpacity>
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.subHeader}>Tác vụ</Text>
+                <Text style={styles.subHeader}>Quan trọng</Text>
                 {tasks.map((task, index) => (
-                    <Task key={index} task={task} nameScreen={'Tác vụ'} Screen={'TaskList'} />
+                    <Task key={index} task={task} nameScreen={'Quan trọng'} Screen={'ImportantList'} />
                 ))}
 
             </ScrollView>
@@ -88,7 +86,7 @@ const TaskList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#164165C2',
+        backgroundColor: '#EF6363A3',
         padding: 10,
         flexDirection: 'column',
     },
@@ -99,12 +97,12 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 20,
-        color: 'white',
+        color: '#9A0000',
     },
     subHeader: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'white',
+        color: '#9A0000',
         marginBottom: 10,
     },
     button: {
@@ -130,4 +128,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TaskList;
+export default ImportantList;

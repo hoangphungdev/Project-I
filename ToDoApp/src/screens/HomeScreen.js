@@ -40,7 +40,8 @@ const HomeScreen = () => {
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
             <ScrollView >
                 <View style={styles.content}>
-                    <TouchableOpacity style={styles.list} >
+                    <TouchableOpacity style={styles.list}
+                        onPress={() => { navigation.navigate('MyDayList') }}>
                         <Image
                             source={
                                 require('../../assets/icons8-sun-48-yellow.png')
@@ -49,7 +50,8 @@ const HomeScreen = () => {
                         />
                         <Text style={[styles.textList, { color: '#656363' }]}>Ngày của tôi</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.list} >
+                    <TouchableOpacity style={styles.list}
+                        onPress={() => { navigation.navigate('ImportantList') }}>
                         <Image
                             source={
                                 require('../../assets/icons8-star-48.png')
@@ -58,7 +60,8 @@ const HomeScreen = () => {
                         />
                         <Text style={[styles.textList, { color: '#656363' }]}>Quan trọng</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.list} >
+                    <TouchableOpacity style={styles.list}
+                        onPress={() => { navigation.navigate('CompletedList') }}>
                         <Image
                             source={
                                 require('../../assets/icons8-check-48.png')

@@ -3,15 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
-import Task from '../components/Common/Task';
-import { AddTaskModal } from '../components/Modal/AddTaskModal';
+import Task from '../components/Common/Task.js';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { createNewTask } from '../database/TaskDao';
-import { UIContext } from '../../UIContext.js';
-import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao';
-import { getTasksByIds } from '../database/TaskDao';
+import { UIContext } from '../../UIContext.js.js';
+import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao.js';
+import { getCompletedTasksByIds } from '../database/TaskDao.js';
 
-const TaskList = () => {
+const CompletedList = () => {
     const navigation = useNavigation();
     const { userId } = React.useContext(UIContext);
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,64 +21,33 @@ const TaskList = () => {
             const fetchTasks = async () => {
                 const task_ids = await getTaskListsByUserId(userId);
                 if (task_ids.length === 0) return;
-
-                const allTasks = await getTasksByIds(task_ids);
-                const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
-                setTasks(sortedTasks);
+                const allTasks = await getCompletedTasksByIds(task_ids);
+                setTasks(allTasks);
             };
-
             fetchTasks();
         }, [newTask])
     );
 
-    const handleAddTask = () => {
-        setNewTask('');
-        setModalVisible(true);
-    };
 
-    const handleSaveTask = async () => {
-        setModalVisible(false);
-        if (newTask.length > 0) {
-            const newTaskObj = await createNewTask({ name: newTask });
-            await addTaskIdToTaskList({ user_id: userId, task_id: newTaskObj });
-            setNewTask('');
-        }
-    };
     return (
         <View style={styles.container}>
-
             <TouchableOpacity style={styles.header}
                 onPress={() => { navigation.navigate('HomeScreen'); }} >
                 <Image
-                    source={require('../../assets/icons8-less-than-50-white.png')}
+                    source={require('../../assets/icons8-less-than-50-brown.png')}
                     style={{ width: 25, height: 25, }} />
                 <Text style={styles.headerText}>Danh sách</Text>
             </TouchableOpacity>
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.subHeader}>Tác vụ</Text>
+                <Text style={styles.subHeader}>Đã hoàn thành</Text>
                 {tasks.map((task, index) => (
-                    <Task key={index} task={task} nameScreen={'Tác vụ'} Screen={'TaskList'} />
+                    <Task key={index} task={task} nameScreen={'Đã hoàn thành'} Screen={'CompletedList'} />
                 ))}
 
             </ScrollView>
 
-            <TouchableOpacity
-                onPress={handleAddTask}
-                style={styles.button}>
-                <Image
-                    source={require('../../assets/icons8-add-50.png')}
-                    style={styles.iconAdd}
-                />
-                <Text style={styles.buttonText}>Thêm tác vụ</Text>
-            </TouchableOpacity>
-            <AddTaskModal
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                newTask={newTask}
-                setNewTask={setNewTask}
-                handleSaveTask={handleSaveTask}
-            />
+
         </View >
     );
 }
@@ -88,7 +55,7 @@ const TaskList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#164165C2',
+        backgroundColor: '#FCC4197A',
         padding: 10,
         flexDirection: 'column',
     },
@@ -99,12 +66,12 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 20,
-        color: 'white',
+        color: '#8A4515',
     },
     subHeader: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'white',
+        color: '#8A4515',
         marginBottom: 10,
     },
     button: {
@@ -130,4 +97,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TaskList;
+export default CompletedList;

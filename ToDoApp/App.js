@@ -7,6 +7,9 @@ import SignUp from './src/screens/SignUp';
 import HomeScreen from './src/screens/HomeScreen';
 import { UIProvider } from './UIContext.js';
 import Pomodoro from './src/screens/Pomodoro';
+import ImportantList from './src/screens/ImportantList';
+import CompletedList from './src/screens/CompletedList';
+import MyDayList from './src/screens/MyDayList';
 
 import React from 'react';
 
@@ -20,6 +23,9 @@ export default function App() {
           <RootStack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
           <RootStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
           <RootStack.Screen name="TaskList" component={TaskList} options={{ headerShown: false }} />
+          <RootStack.Screen name="ImportantList" component={ImportantList} options={{ headerShown: false }} />
+          <RootStack.Screen name="CompletedList" component={CompletedList} options={{ headerShown: false }} />
+          <RootStack.Screen name="MyDayList" component={MyDayList} options={{ headerShown: false }} />
           <RootStack.Screen name="UpdateTask" component={UpdateTask} options={{ headerShown: false }} />
           <RootStack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="Pomodoro" component={Pomodoro} options={{ headerShown: false }} />

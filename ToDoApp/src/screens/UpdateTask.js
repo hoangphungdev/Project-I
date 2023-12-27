@@ -18,6 +18,8 @@ const UpdateTask = () => {
     const { userId } = React.useContext(UIContext);
     const route = useRoute();
     const task = route.params.task;
+    const nameScreen = route.params.nameScreen;
+    const Screen = route.params.Screen;
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
     const [TaskName, setTaskName] = useState(task.name);
@@ -30,6 +32,7 @@ const UpdateTask = () => {
     const [isAddReminder, setIsAddReminder] = useState(task.timeReminder);
     const [isAddDueDate, setIsAddDueDate] = useState(task.dueDate);
     const [isRepeat, setIsRepeat] = useState(task.repeat);
+    const [note, setNote] = useState(task.note);
 
     const originalName = task.name;
 
@@ -55,8 +58,16 @@ const UpdateTask = () => {
         Keyboard.dismiss();
     }
 
-    const handleAddMyDay = () => {
-        setIsAddMyDay(!isAddMyDay);
+    const handleAddNote = async () => {
+        setIsCompleteButtonVisible(false);
+        Keyboard.dismiss();
+        await updateTask({ id: task.id, note: note });
+    }
+
+    const handleAddMyDay = async () => {
+        const checked = !isAddMyDay;
+        setIsAddMyDay(checked);
+        await updateTask({ id: task.id, myDay: checked });
     }
 
     const handleAddReminder = () => {
@@ -78,7 +89,9 @@ const UpdateTask = () => {
             case 'addNameTask':
                 handleCompleteAddTask();
                 break;
-
+            case 'addNote':
+                handleAddNote();
+                break;
         }
     }
 
@@ -91,7 +104,7 @@ const UpdateTask = () => {
     const handleDeleteTask = async () => {
         await deleteTask(task.id);
         await removeTaskIdFromTaskList({ user_id: userId, task_id: task.id });
-        navigation.navigate('TaskList');
+        navigation.navigate(Screen);
     }
 
     return (
@@ -100,12 +113,12 @@ const UpdateTask = () => {
             <View style={styles.header}>
                 <TouchableOpacity stype={{ flexDirection: 'row', alignItems: 'center' }}
                     style={{ flexDirection: 'row', alignItems: 'center' }}
-                    onPress={() => { navigation.navigate('TaskList') }}>
+                    onPress={() => { navigation.navigate(Screen) }}>
                     <Image
                         source={require('../../assets/icons8-less-than-50-blue.png')}
                         style={styles.iconLessThan}
                     />
-                    <Text style={styles.headerText}>Tác vụ</Text>
+                    <Text style={styles.headerText}>{nameScreen}</Text>
                     <View style={{ flex: 1 }} ></View>
                     {isCompleteButtonVisible && (
                         <TouchableOpacity style={{ marginRight: 10 }}
@@ -128,7 +141,7 @@ const UpdateTask = () => {
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
                     {steps.map((step, index) => (
-                        <Step key={index} StepName={step} />
+                        <Step key={index} StepName={step} TaskId={task.id} />
                     ))}
                     {/* <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} /> */}
                     <AddStep
@@ -197,13 +210,18 @@ const UpdateTask = () => {
 
                     <View style={styles.addNote}>
                         <TextInput
-                            onPressIn={() => setIsCompleteButtonVisible(true)}
+                            onFocus={() => {
+                                setIsCompleteButtonVisible(true)
+                                setCurrentState('addNote')
+                            }}
                             multiline={true}
+                            onChangeText={setNote}
                             placeholder="Thêm ghi chú"
+                            value={note}
                             style={[styles.addMyDayText, { color: '#656363', outlineWidth: 0, flex: 1 }]}>
                         </TextInput>
                     </View>
-                    <View style={{ height: 200 }} />
+                    {/* <View style={{ height: 200 }} /> */}
                 </View>
             </ScrollView >
 

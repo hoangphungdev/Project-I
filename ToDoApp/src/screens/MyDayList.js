@@ -6,12 +6,12 @@ import { ScrollView } from 'react-native';
 import Task from '../components/Common/Task';
 import { AddTaskModal } from '../components/Modal/AddTaskModal';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { createNewTask } from '../database/TaskDao';
+import { createNewMyDayTask } from '../database/TaskDao';
 import { UIContext } from '../../UIContext.js';
 import { getTaskListsByUserId, addTaskIdToTaskList } from '../database/TaskListDao';
-import { getTasksByIds } from '../database/TaskDao';
+import { getMyDayTasksByIds } from '../database/TaskDao';
 
-const TaskList = () => {
+const MyDayList = () => {
     const navigation = useNavigation();
     const { userId } = React.useContext(UIContext);
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,10 +23,8 @@ const TaskList = () => {
             const fetchTasks = async () => {
                 const task_ids = await getTaskListsByUserId(userId);
                 if (task_ids.length === 0) return;
-
-                const allTasks = await getTasksByIds(task_ids);
-                const sortedTasks = [...allTasks].sort((a, b) => a.completed - b.completed);
-                setTasks(sortedTasks);
+                const allTasks = await getMyDayTasksByIds(task_ids);
+                setTasks(allTasks);
             };
 
             fetchTasks();
@@ -41,7 +39,7 @@ const TaskList = () => {
     const handleSaveTask = async () => {
         setModalVisible(false);
         if (newTask.length > 0) {
-            const newTaskObj = await createNewTask({ name: newTask });
+            const newTaskObj = await createNewMyDayTask({ name: newTask });
             await addTaskIdToTaskList({ user_id: userId, task_id: newTaskObj });
             setNewTask('');
         }
@@ -58,9 +56,9 @@ const TaskList = () => {
             </TouchableOpacity>
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.subHeader}>Tác vụ</Text>
+                <Text style={styles.subHeader}>Ngày của tôi</Text>
                 {tasks.map((task, index) => (
-                    <Task key={index} task={task} nameScreen={'Tác vụ'} Screen={'TaskList'} />
+                    <Task key={index} task={task} nameScreen={'Ngày của tôi'} Screen={'MyDayList'} />
                 ))}
 
             </ScrollView>
@@ -88,7 +86,7 @@ const TaskList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#164165C2',
+        backgroundColor: '#417D4D',
         padding: 10,
         flexDirection: 'column',
     },
@@ -130,4 +128,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TaskList;
+export default MyDayList;

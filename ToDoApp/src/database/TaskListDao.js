@@ -35,6 +35,7 @@ export const removeTaskIdFromTaskList = async (props) => {
         });
     });
 }
+
 export const getTaskListsByUserId = async (user_id) => {
     const q = query(collection(fb_db, "TaskList"), where("user_id", "==", user_id));
     const querySnapshot = await getDocs(q);
@@ -44,3 +45,4 @@ export const getTaskListsByUserId = async (user_id) => {
     });
     return task_ids;
 }
+

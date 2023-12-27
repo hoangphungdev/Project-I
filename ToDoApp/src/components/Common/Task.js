@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { updateTask } from '../../database/TaskDao';
@@ -8,6 +8,11 @@ const Task = (props) => {
     const [isComplete, setComplete] = useState(task.completed);
     const [isImportant, setImportant] = useState(task.important);
     const navigation = useNavigation();
+
+    useEffect(() => {
+        setComplete(task.completed);
+        setImportant(task.important);
+    }, [task]);
 
     const handlePressComplete = async () => {
         const checked = !isComplete;
@@ -22,7 +27,7 @@ const Task = (props) => {
     };
 
     const handlePress = () => {
-        navigation.navigate('UpdateTask', { task: task });
+        navigation.navigate('UpdateTask', { task: task, nameScreen: props.nameScreen, Screen: props.Screen });
     }
 
     return (
@@ -37,7 +42,7 @@ const Task = (props) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <Text style={styles.text}>{props.task.name}</Text>
+            <Text style={[styles.text, isComplete ? styles.strikethrough : null]}>{props.task.name}</Text>
             <TouchableOpacity onPress={handlePressImportant}>
                 <Image
                     source={isImportant
@@ -76,6 +81,10 @@ const styles = StyleSheet.create({
         margin: 5,
         flex: 1,
     },
+    strikethrough: {
+        textDecorationLine: 'line-through',
+        textDecorationColor: '#656363',
+    }
 });
 
 

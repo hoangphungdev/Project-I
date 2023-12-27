@@ -1,31 +1,32 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, TextInput } from 'react-native';
+import { deleteStep } from '../../database/TaskDao';
 
-const Step = ({ StepName }) => {
+const Step = (props) => {
     const [isComplete, setComplete] = useState(false);
-    const [stepName, setStepName] = useState(StepName);
+    const [stepName, setStepName] = useState(props.StepName);
 
-    const handlePressComplete = () => {
+    const handlePressComplete = async () => {
         setComplete(!isComplete);
+        await deleteStep({ id: props.TaskId, step: props.StepName });
     };
 
     return (
         <View style={styles.Step}>
-            {/* <TouchableOpacity onPress={handlePressComplete}>
+            <TouchableOpacity onPress={handlePressComplete}>
                 <Image
                     source={isComplete
                         ? require('../../../assets/icons8-checked-48-gray.png')
                         : require('../../../assets/icons8-circle-48-gray.png')}
                     style={styles.iconCircle}
                 />
-            </TouchableOpacity> */}
-            <Image
-                source={require('../../../assets/icons8-circle-48-gray.png')}
-                style={styles.iconCircle}
-            />
+            </TouchableOpacity>
+
             <TextInput style={styles.text}
                 onChangeText={setStepName}
-                value={StepName} />
+                value={props.StepName} />
+            {/* <Text style={styles.text}>{props.StepName}</Text> */}
+
             <TouchableOpacity >
                 <Image
                     source={require('../../../assets/icons8-ellipsis-30.png')}
