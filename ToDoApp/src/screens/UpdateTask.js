@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Button, Keyboard } from 'react-native'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
@@ -15,6 +15,7 @@ import { UIContext } from '../../UIContext.js';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 
 
@@ -40,6 +41,7 @@ const UpdateTask = () => {
     const createdAt = formatDistanceToNow(parseISO(task.createdAt), { addSuffix: true, locale: vi });
 
     const originalName = task.name;
+
 
     const handleCompleteAddStep = async () => {
         setIsPressed(false);
@@ -93,9 +95,6 @@ const UpdateTask = () => {
             case 'addNote':
                 handleAddNote();
                 break;
-            case 'addDueDate':
-                handleAddDueDate();
-                break;
         }
     }
 
@@ -108,20 +107,28 @@ const UpdateTask = () => {
 
     const [dueDate, setDueDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [formattedDate, setFormattedDate] = useState('');
+    const [TaskDueDate, setTaskDueDate] = useState(task.dueDate);
 
-    const onChange = (event, selectedDate) => {
+    useEffect(() => {
+        if (TaskDueDate != null) {
+            const timestamp = { "nanoseconds": TaskDueDate.nanoseconds, "seconds": TaskDueDate.seconds };
+            const date = new Date(timestamp.seconds * 1000);
+            const formattedDate = format(date, 'dd MMM yyyy');
+            setFormattedDate(formattedDate);
+        } else {
+            setFormattedDate('');
+        }
+
+    }, [dueDate, isAddDueDate]);
+
+
+    const handleAddDueDate = async (event, selectedDate) => {
         const currentDate = selectedDate || dueDate;
-        setShowDatePicker(Platform.OS === 'ios');
         setDueDate(currentDate);
         setIsAddDueDate(true);
-    };
-
-    const handleAddDueDate = async () => {
-        setShowDatePicker(false);
-        setIsCompleteButtonVisible(false);
-        console.log('Due date: ', dueDate);
         await updateTask({ id: task.id, dueDate: dueDate });
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -202,10 +209,11 @@ const UpdateTask = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.addMyDay}
-                        onPress={() => {
+                        onPress={async () => {
                             setIsAddDueDate(!isAddDueDate);
-                            setShowDatePicker(true);
-                            setIsCompleteButtonVisible(true);
+                            setShowDatePicker(!isAddDueDate);
+                            setTaskDueDate(null);
+                            await updateTask({ id: task.id, dueDate: null });
                         }}>
                         <Image
                             source={isAddDueDate
@@ -215,17 +223,17 @@ const UpdateTask = () => {
                             style={styles.iconSun}
                         />
                         {isAddDueDate
-                            ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đến hạn vào</Text>
+                            ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đến hạn vào {formattedDate}</Text>
                             : <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm ngày đến hạn</Text>
                         }
-                        {isAddDueDate && (
+                        {showDatePicker && (
                             <DateTimePicker
                                 testID="dateTimePicker"
                                 value={dueDate}
                                 mode={'date'}
                                 is24Hour={true}
                                 display="default"
-                                onChange={onChange}
+                                onChange={handleAddDueDate}
                                 minimumDate={new Date()}
                             />
                         )}
