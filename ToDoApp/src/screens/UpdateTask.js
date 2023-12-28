@@ -12,6 +12,10 @@ import { updateTask } from '../database/TaskDao';
 import { deleteTask } from '../database/TaskDao';
 import { removeTaskIdFromTaskList } from '../database/TaskListDao';
 import { UIContext } from '../../UIContext.js';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 
 const UpdateTask = () => {
@@ -33,6 +37,7 @@ const UpdateTask = () => {
     const [isAddDueDate, setIsAddDueDate] = useState(task.dueDate);
     const [isRepeat, setIsRepeat] = useState(task.repeat);
     const [note, setNote] = useState(task.note);
+    const createdAt = formatDistanceToNow(parseISO(task.createdAt), { addSuffix: true, locale: vi });
 
     const originalName = task.name;
 
@@ -74,10 +79,6 @@ const UpdateTask = () => {
         setIsAddReminder(!isAddReminder);
     }
 
-    const handleAddDueDate = () => {
-        setIsAddDueDate(!isAddDueDate);
-    }
-
     const handleRepeat = () => {
         setIsRepeat(!isRepeat);
     }
@@ -92,19 +93,34 @@ const UpdateTask = () => {
             case 'addNote':
                 handleAddNote();
                 break;
+            case 'addDueDate':
+                handleAddDueDate();
+                break;
         }
     }
 
-    const handleDeleteStep = async (step) => {
-        const newSteps = steps.filter(item => item !== step);
-        setSteps(newSteps);
-        await updateTask({ id: task.id, step: step });
-    }
 
     const handleDeleteTask = async () => {
         await deleteTask(task.id);
         await removeTaskIdFromTaskList({ user_id: userId, task_id: task.id });
         navigation.navigate(Screen);
+    }
+
+    const [dueDate, setDueDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || dueDate;
+        setShowDatePicker(Platform.OS === 'ios');
+        setDueDate(currentDate);
+        setIsAddDueDate(true);
+    };
+
+    const handleAddDueDate = async () => {
+        setShowDatePicker(false);
+        setIsCompleteButtonVisible(false);
+        console.log('Due date: ', dueDate);
+        await updateTask({ id: task.id, dueDate: dueDate });
     }
 
     return (
@@ -185,7 +201,12 @@ const UpdateTask = () => {
                         <Text style={[styles.addMyDayText, { color: '#656363' }]}>Nhắc tôi</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.addMyDay} onPress={handleAddDueDate}>
+                    <TouchableOpacity style={styles.addMyDay}
+                        onPress={() => {
+                            setIsAddDueDate(!isAddDueDate);
+                            setShowDatePicker(true);
+                            setIsCompleteButtonVisible(true);
+                        }}>
                         <Image
                             source={isAddDueDate
                                 ? require('../../assets/icons8-date-48-blue.png')
@@ -193,7 +214,21 @@ const UpdateTask = () => {
                             }
                             style={styles.iconSun}
                         />
-                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm ngày đến hạn</Text>
+                        {isAddDueDate
+                            ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đến hạn vào</Text>
+                            : <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm ngày đến hạn</Text>
+                        }
+                        {isAddDueDate && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={dueDate}
+                                mode={'date'}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                                minimumDate={new Date()}
+                            />
+                        )}
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.addMyDay} onPress={handleRepeat}>
@@ -222,13 +257,14 @@ const UpdateTask = () => {
                         </TextInput>
                     </View>
                     {/* <View style={{ height: 200 }} /> */}
+
                 </View>
             </ScrollView >
 
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
             <View style={styles.footer}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={styles.footerText}>Đã thêm vài giây trước</Text>
+                    <Text style={styles.footerText}>Đã tạo {createdAt}</Text>
                 </View>
                 <TouchableOpacity onPress={handleDeleteTask}>
                     <Image
@@ -238,7 +274,6 @@ const UpdateTask = () => {
                 </TouchableOpacity>
             </View>
         </View >
-
     );
 }
 

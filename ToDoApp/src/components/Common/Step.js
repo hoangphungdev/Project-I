@@ -22,7 +22,7 @@ const Step = (props) => {
                 />
             </TouchableOpacity>
 
-            <TextInput style={styles.text}
+            <TextInput style={[styles.text, isComplete ? styles.strikethrough : null]}
                 onChangeText={setStepName}
                 value={props.StepName} />
             {/* <Text style={styles.text}>{props.StepName}</Text> */}
@@ -66,6 +66,10 @@ const styles = StyleSheet.create({
         flex: 1,
         outlineWidth: 0,
     },
+    strikethrough: {
+        textDecorationLine: 'line-through',
+        textDecorationColor: '#656363',
+    }
 });
 
 

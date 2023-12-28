@@ -29,7 +29,7 @@ const AddNameTask = (props) => {
                     style={styles.iconCircle}
                 />
             </TouchableOpacity>
-            <TextInput style={styles.text}
+            <TextInput style={[styles.text, isComplete ? styles.strikethrough : null]}
                 onFocus={() => {
                     props.setIsCompleteButtonVisible(true)
                     props.setCurrentState('addNameTask')
@@ -76,6 +76,10 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         outlineWidth: 0,
     },
+    strikethrough: {
+        textDecorationLine: 'line-through',
+        textDecorationColor: '#656363',
+    }
 });
 
 

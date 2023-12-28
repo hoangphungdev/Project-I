@@ -14,6 +14,7 @@ export const createNewTask = async (props) => {
             dueDate: null,
             repeat: false,
             note: '',
+            createdAt: new Date().toISOString(),
         });
         return docRef.id;
     } catch (e) {

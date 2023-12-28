@@ -46,7 +46,6 @@ const SignIn = () => {
 
         try {
             const userId = await checkAccount({ email: email, password: password });
-            console.log(userId);
             if (userId) {
                 // Lưu userId vào UIContext
                 setUserId(userId);
