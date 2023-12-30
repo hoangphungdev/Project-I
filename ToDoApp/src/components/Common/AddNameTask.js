@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         margin: 5,
         flex: 1,
         fontWeight: '500',
-        outlineWidth: 0,
+        // outlineWidth: 0,
     },
     strikethrough: {
         textDecorationLine: 'line-through',

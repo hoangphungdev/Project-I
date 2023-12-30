@@ -104,6 +104,7 @@ export const createNewImportantTask = async (props) => {
             dueDate: null,
             repeat: false,
             note: '',
+            createdAt: new Date().toISOString(),
         });
         return docRef.id;
     } catch (e) {
@@ -162,6 +163,7 @@ export const createNewMyDayTask = async (props) => {
             dueDate: null,
             repeat: false,
             note: '',
+            createdAt: new Date().toISOString(),
         });
         return docRef.id;
     } catch (e) {

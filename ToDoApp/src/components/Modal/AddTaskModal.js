@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 10,
         flex: 1,
-        outlineWidth: 0,
+        // outlineWidth: 0,
     },
     iconCircle: {
         width: 27,

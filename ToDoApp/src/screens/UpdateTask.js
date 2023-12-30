@@ -160,6 +160,7 @@ const UpdateTask = () => {
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
+
             <ScrollView
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
@@ -261,7 +262,7 @@ const UpdateTask = () => {
                             onChangeText={setNote}
                             placeholder="Thêm ghi chú"
                             value={note}
-                            style={[styles.addMyDayText, { color: '#656363', outlineWidth: 0, flex: 1 }]}>
+                            style={[styles.addMyDayText, { color: '#656363', flex: 1 }]}>
                         </TextInput>
                     </View>
                     {/* <View style={{ height: 200 }} /> */}
