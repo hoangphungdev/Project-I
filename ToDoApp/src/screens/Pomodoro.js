@@ -1,35 +1,80 @@
-import { View, Text, TextInput, Button, Keyboard } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Svg, Circle } from 'react-native-svg';
+import TimeAdjustModal from '../components/Modal/TimeAdjustModal';
+import { Audio } from 'expo-av';
 
-const UpdateTask = () => {
+const Pomodoro = () => {
     const [timerStatus, setTimerStatus] = useState('stopped');
     const [selectedButton, setSelectedButton] = useState('Pomodoro');
     const [totalTime, setTotalTime] = useState(25 * 60);
     const navigation = useNavigation();
     const [timeLeft, setTimeLeft] = useState(totalTime);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [pomodoroTime, setPomodoroTime] = useState(25 * 60);
+    const [shortBreakTime, setShortBreakTime] = useState(5 * 60);
+    const [longBreakTime, setLongBreakTime] = useState(15 * 60);
+
+
+    const soundObject = new Audio.Sound();
+    soundObject.loadAsync(require('../../assets/sound/Nhac-chuong-bao-thuc.mp3'));
 
     useEffect(() => {
         let intervalId;
 
         if (timerStatus === 'running') {
-            intervalId = setInterval(() => {
-                setTimeLeft(timeLeft => timeLeft - 1);
+            intervalId = setInterval(async () => {
+                setTimeLeft(timeLeft => {
+                    if (timeLeft === 0) {
+                        clearInterval(intervalId);
+                        soundObject.playAsync();
+                        return 0;
+                    } else {
+                        return timeLeft - 1;
+                    }
+                });
             }, 1000);
         }
 
         return () => clearInterval(intervalId);
     }, [timeLeft, timerStatus]);
 
+
     const radius = 100;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = (timeLeft / totalTime) * circumference;
 
+    const handleConfirm = ({ pomodoroTime, shortBreakTime, longBreakTime }) => {
+        setPomodoroTime(pomodoroTime * 60);
+        setShortBreakTime(shortBreakTime * 60);
+        setLongBreakTime(longBreakTime * 60);
+
+        if (selectedButton === 'Pomodoro') {
+            setTimeLeft(pomodoroTime * 60);
+            setTotalTime(pomodoroTime * 60);
+        } else if (selectedButton === 'Short Break') {
+            setTimeLeft(shortBreakTime * 60);
+            setTotalTime(shortBreakTime * 60);
+        } else if (selectedButton === 'Long Break') {
+            setTimeLeft(longBreakTime * 60);
+            setTotalTime(longBreakTime * 60);
+        }
+    };
+
+
+
     return (
         <View style={styles.container}>
+
+            <TimeAdjustModal
+                isVisible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                onConfirm={handleConfirm}
+            />
 
             <View style={styles.header}>
                 <TouchableOpacity stype={{ flexDirection: 'row', alignItems: 'center' }}
@@ -42,6 +87,13 @@ const UpdateTask = () => {
                     <Text style={styles.headerText}>Danh sách</Text>
                     <View style={{ flex: 1 }} ></View>
 
+                    <TouchableOpacity
+                        onPress={() => setIsModalVisible(true)} >
+                        <Image
+                            source={require('../../assets/icons8-ellipsis-30.png')}
+                            style={styles.iconEclipsis}
+                        />
+                    </TouchableOpacity>
                 </TouchableOpacity>
 
             </View>
@@ -52,8 +104,8 @@ const UpdateTask = () => {
                     <TouchableOpacity
                         style={[styles.button, selectedButton === 'Pomodoro' ? styles.selectedButton : null]}
                         onPress={() => {
-                            setTimeLeft(25 * 60);
-                            setTotalTime(25 * 60);
+                            setTimeLeft(pomodoroTime);
+                            setTotalTime(pomodoroTime);
                             setTimerStatus('stopped');
                             setSelectedButton('Pomodoro');
                         }}
@@ -63,8 +115,8 @@ const UpdateTask = () => {
                     <TouchableOpacity
                         style={[styles.button, selectedButton === 'Short Break' ? styles.selectedButton : null]}
                         onPress={() => {
-                            setTimeLeft(5 * 60);
-                            setTotalTime(5 * 60);
+                            setTimeLeft(shortBreakTime);
+                            setTotalTime(shortBreakTime);
                             setTimerStatus('stopped');
                             setSelectedButton('Short Break');
                         }}
@@ -74,8 +126,8 @@ const UpdateTask = () => {
                     <TouchableOpacity
                         style={[styles.button, selectedButton === 'Long Break' ? styles.selectedButton : null]}
                         onPress={() => {
-                            setTimeLeft(15 * 60);
-                            setTotalTime(15 * 60);
+                            setTimeLeft(longBreakTime);
+                            setTotalTime(longBreakTime);
                             setTimerStatus('stopped');
                             setSelectedButton('Long Break');
                         }}
@@ -113,7 +165,7 @@ const UpdateTask = () => {
                             style={styles.controlButton}
                             onPress={() => setTimerStatus('running')}
                         >
-                            <Text style={styles.buttonText}>Start</Text>
+                            <Text style={styles.buttonText}>Bắt đầu</Text>
                         </TouchableOpacity>
                     )}
                     {timerStatus === 'running' && (
@@ -121,9 +173,11 @@ const UpdateTask = () => {
                             <View style={styles.row}>
                                 <TouchableOpacity
                                     style={styles.controlButton}
-                                    onPress={() => setTimerStatus('paused')}
-                                >
-                                    <Text style={styles.buttonText}>Pause</Text>
+                                    onPress={() => {
+                                        setTimerStatus('paused')
+                                        soundObject.stopAsync()
+                                    }}>
+                                    <Text style={styles.buttonText}>Dừng lại</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={styles.controlButton}
@@ -144,7 +198,7 @@ const UpdateTask = () => {
                                     style={styles.controlButton}
                                     onPress={() => setTimerStatus('running')}
                                 >
-                                    <Text style={styles.buttonText}>Continue</Text>
+                                    <Text style={styles.buttonText}>Tiếp tục</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={styles.controlButton}
@@ -185,6 +239,11 @@ const styles = StyleSheet.create({
     iconLessThan: {
         width: 25,
         height: 25,
+    },
+    iconEclipsis: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
     },
 
     content: {
@@ -247,4 +306,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UpdateTask;
+export default Pomodoro;
