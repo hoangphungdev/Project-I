@@ -10,6 +10,7 @@ import Pomodoro from './src/screens/Pomodoro';
 import ImportantList from './src/screens/ImportantList';
 import CompletedList from './src/screens/CompletedList';
 import MyDayList from './src/screens/MyDayList';
+import ScheduleList from './src/screens/ScheduleList';
 
 import React from 'react';
 
@@ -26,6 +27,7 @@ export default function App() {
           <RootStack.Screen name="ImportantList" component={ImportantList} options={{ headerShown: false }} />
           <RootStack.Screen name="CompletedList" component={CompletedList} options={{ headerShown: false }} />
           <RootStack.Screen name="MyDayList" component={MyDayList} options={{ headerShown: false }} />
+          <RootStack.Screen name="ScheduleList" component={ScheduleList} options={{ headerShown: false }} />
           <RootStack.Screen name="UpdateTask" component={UpdateTask} options={{ headerShown: false }} />
           <RootStack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="Pomodoro" component={Pomodoro} options={{ headerShown: false }} />

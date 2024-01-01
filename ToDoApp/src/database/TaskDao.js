@@ -119,8 +119,6 @@ export const getImportantTask = async (id) => {
     if (taskSnap.exists() && taskSnap.data().important === true
         && taskSnap.data().completed === false) {
         return { id: taskSnap.id, ...taskSnap.data() };
-    } else {
-        console.log("No such document or the task is not marked as important!");
     }
 }
 
@@ -138,8 +136,6 @@ export const getCompletedTask = async (id) => {
 
     if (taskSnap.exists() && taskSnap.data().completed === true) {
         return { id: taskSnap.id, ...taskSnap.data() };
-    } else {
-        console.log("No such document or the task is not marked as completed!");
     }
 }
 
@@ -178,14 +174,32 @@ export const getMyDayTask = async (id) => {
     if (taskSnap.exists() && taskSnap.data().myDay === true
         && taskSnap.data().completed === false) {
         return { id: taskSnap.id, ...taskSnap.data() };
-    } else {
-        console.log("No such document or the task is not marked as myDay!");
     }
 }
 
 
+
+
 export const getMyDayTasksByIds = async (task_ids) => {
     const tasksPromises = task_ids.map(id => getMyDayTask(id));
+    const tasks = await Promise.all(tasksPromises);
+    return tasks.filter(task => task !== undefined);
+}
+
+
+export const getDueDateTask = async (id) => {
+    const taskRef = doc(fb_db, "tasks", id.toString());
+    const taskSnap = await getDoc(taskRef);
+
+    if (taskSnap.exists() && taskSnap.data().dueDate != null
+        && taskSnap.data().completed === false) {
+        return { id: taskSnap.id, ...taskSnap.data() };
+    }
+}
+
+
+export const getDueDateTasksByIds = async (task_ids) => {
+    const tasksPromises = task_ids.map(id => getDueDateTask(id));
     const tasks = await Promise.all(tasksPromises);
     return tasks.filter(task => task !== undefined);
 }

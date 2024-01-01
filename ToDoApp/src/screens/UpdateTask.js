@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 
 
 
+
 const UpdateTask = () => {
     const { userId } = React.useContext(UIContext);
     const route = useRoute();
@@ -106,7 +107,7 @@ const UpdateTask = () => {
     }
 
     const [dueDate, setDueDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showDatePicker_2, setShowDatePicker_2] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
     const [TaskDueDate, setTaskDueDate] = useState(task.dueDate);
 
@@ -212,7 +213,7 @@ const UpdateTask = () => {
                     <TouchableOpacity style={styles.addMyDay}
                         onPress={async () => {
                             setIsAddDueDate(!isAddDueDate);
-                            setShowDatePicker(!isAddDueDate);
+                            setShowDatePicker_2(!isAddDueDate);
                             setTaskDueDate(null);
                             await updateTask({ id: task.id, dueDate: null });
                         }}>
@@ -227,11 +228,11 @@ const UpdateTask = () => {
                             ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đến hạn vào {formattedDate}</Text>
                             : <Text style={[styles.addMyDayText, { color: '#656363' }]}>Thêm ngày đến hạn</Text>
                         }
-                        {showDatePicker && (
+                        {showDatePicker_2 && (
                             <DateTimePicker
                                 testID="dateTimePicker"
                                 value={dueDate}
-                                mode={'date'}
+                                mode={'datetime'}
                                 is24Hour={true}
                                 display="default"
                                 onChange={handleAddDueDate}

@@ -50,6 +50,18 @@ const HomeScreen = () => {
                         />
                         <Text style={[styles.textList, { color: '#656363' }]}>Ngày của tôi</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.list}
+                        onPress={() => { navigation.navigate('ScheduleList') }}>
+                        <Image
+                            source={
+                                require('../../assets/icons8-schedule-48.png')
+                            }
+                            style={styles.iconList}
+                        />
+                        <Text style={[styles.textList, { color: '#656363' }]}>Đã lập kế hoạch</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity style={styles.list}
                         onPress={() => { navigation.navigate('ImportantList') }}>
                         <Image
