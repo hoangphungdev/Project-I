@@ -48,10 +48,7 @@ const UpdateTask = () => {
         setIsPressed(false);
         setIsCompleteButtonVisible(false);
         if (newStep.length > 0) {
-            console.log('New step: ', newStep);
             setSteps(prevSteps => [...prevSteps, newStep]);
-
-            console.log(task.id);
             await updateTask({ id: task.id, step: newStep });
         }
         setNewStep('');

@@ -59,7 +59,6 @@ export const updateTask = async (props) => {
 }
 
 export const deleteStep = async (props) => {
-    console.log(props);
     const taskRef = doc(fb_db, "tasks", props.id);
 
     let updateObject = {};
