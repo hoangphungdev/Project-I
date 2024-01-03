@@ -6,11 +6,16 @@ import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UIContext } from '../../UIContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
+import { isToday } from 'date-fns';
+import { getTaskListsByUserId } from '../database/TaskListDao';
+import { getMyDayTasksByIds, updateTask } from '../database/TaskDao';
 
 
 const HomeScreen = () => {
     const navigation = useNavigation();
-    const { setUserId } = useContext(UIContext);
+    const { setUserId, userId } = useContext(UIContext);
+
 
     const logout = async () => {
         setUserId(null);
@@ -18,6 +23,28 @@ const HomeScreen = () => {
         await AsyncStorage.setItem('userPassword', '');
         navigation.navigate('SignIn');
     }
+
+    useEffect(() => {
+        const resetMyDay = async () => {
+            const task_ids = await getTaskListsByUserId(userId);
+            if (task_ids.length === 0) return;
+            const allTasks = await getMyDayTasksByIds(task_ids);
+
+            const lastOpen = await AsyncStorage.getItem('lastOpen');
+            const lastOpenDate = lastOpen ? new Date(JSON.parse(lastOpen)) : new Date();
+
+            if (!isToday(lastOpenDate)) {
+                allTasks.forEach(async (task) => {
+                    if (task.repeat === false)
+                        await updateTask({ id: task.id, myDay: false });
+                });
+            }
+        };
+
+        resetMyDay();
+    }, []);
+
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>

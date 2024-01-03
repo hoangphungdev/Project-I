@@ -16,8 +16,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const UpdateTask = () => {
@@ -73,14 +72,15 @@ const UpdateTask = () => {
         const checked = !isAddMyDay;
         setIsAddMyDay(checked);
         await updateTask({ id: task.id, myDay: checked });
+        await AsyncStorage.setItem('lastOpen', JSON.stringify(new Date()));
     }
 
-    const handleAddReminder = () => {
-        setIsAddReminder(!isAddReminder);
-    }
 
-    const handleRepeat = () => {
-        setIsRepeat(!isRepeat);
+
+    const handleRepeat = async () => {
+        const checked = !isRepeat;
+        setIsRepeat(checked);
+        await updateTask({ id: task.id, repeat: checked });
     }
     const handleComplete = () => {
         switch (currentState) {
@@ -102,6 +102,30 @@ const UpdateTask = () => {
         await removeTaskIdFromTaskList({ user_id: userId, task_id: task.id });
         navigation.navigate(Screen);
     }
+
+    const [reminderDate, setReminderDate] = useState(new Date());
+    const [showReminderPicker, setShowReminderPicker] = useState(false);
+    const [formattedReminder, setFormattedReminder] = useState('');
+    const [TaskReminder, setTaskReminder] = useState(task.timeReminder);
+
+    useEffect(() => {
+        if (TaskReminder != null) {
+            const timestamp = { "nanoseconds": TaskReminder.nanoseconds, "seconds": TaskReminder.seconds };
+            const date = new Date(timestamp.seconds * 1000);
+            const formattedReminder = format(date, 'dd MMM yyyy, HH:mm');
+            setFormattedReminder(formattedReminder);
+        } else {
+            setFormattedReminder('');
+        }
+
+    }, [reminderDate, isAddReminder]);
+
+    const handleAddReminder = async (event, selectedDate) => {
+        const currentDate = selectedDate || reminderDate;
+        setReminderDate(currentDate);
+        setIsAddReminder(true);
+        await updateTask({ id: task.id, timeReminder: reminderDate });
+    };
 
     const [dueDate, setDueDate] = useState(new Date());
     const [showDatePicker_2, setShowDatePicker_2] = useState(false);
@@ -196,7 +220,12 @@ const UpdateTask = () => {
 
                     <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
-                    <TouchableOpacity style={styles.addMyDay} onPress={handleAddReminder}>
+                    <TouchableOpacity style={styles.addMyDay} onPress={() => {
+                        setIsAddReminder(!isAddReminder);
+                        setShowReminderPicker(!isAddReminder);
+                        setTaskReminder(null);
+                        updateTask({ id: task.id, timeReminder: null });
+                    }}>
                         <Image
                             source={isAddReminder
                                 ? require('../../assets/icons8-bell-48-blue.png')
@@ -204,7 +233,21 @@ const UpdateTask = () => {
                             }
                             style={styles.iconSun}
                         />
-                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Nhắc tôi</Text>
+                        {isAddReminder
+                            ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Nhắc tôi vào {formattedReminder}</Text>
+                            : <Text style={[styles.addMyDayText, { color: '#656363' }]}>Nhắc tôi</Text>
+                        }
+                        {showReminderPicker && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={reminderDate}
+                                mode={'datetime'}
+                                is24Hour={true}
+                                display="default"
+                                onChange={handleAddReminder}
+                                minimumDate={new Date()}
+                            />
+                        )}
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.addMyDay}
@@ -246,7 +289,11 @@ const UpdateTask = () => {
                             }
                             style={styles.iconSun}
                         />
-                        <Text style={[styles.addMyDayText, { color: '#656363' }]}>Lặp lại</Text>
+
+                        {isRepeat
+                            ? <Text style={[styles.addMyDayText, { color: '#339AF0' }]}>Đang lặp lại</Text>
+                            : <Text style={[styles.addMyDayText, { color: '#656363' }]}>Lặp lại</Text>
+                        }
                     </TouchableOpacity>
                     <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
 
@@ -304,7 +351,6 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
     },
-
     content: {
         flex: 1,
         marginLeft: 20,
