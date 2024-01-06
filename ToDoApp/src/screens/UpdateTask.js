@@ -100,7 +100,7 @@ const UpdateTask = () => {
     const handleDeleteTask = async () => {
         await deleteTask(task.id);
         await removeTaskIdFromTaskList({ user_id: userId, task_id: task.id });
-        navigation.navigate(Screen);
+        navigation.navigate("HomeScreen");
     }
 
     const [reminderDate, setReminderDate] = useState(new Date());

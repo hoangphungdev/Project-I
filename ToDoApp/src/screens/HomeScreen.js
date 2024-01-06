@@ -44,6 +44,29 @@ const HomeScreen = () => {
         resetMyDay();
     }, []);
 
+    // useEffect(() => {
+    //     const resetMyDay = async () => {
+    //         const task_ids = await getTaskListsByUserId(userId);
+    //         if (task_ids.length === 0) return;
+    //         const allTasks = await getMyDayTasksByIds(task_ids);
+
+    //         const lastOpen = await AsyncStorage.getItem('lastOpen');
+    //         const lastOpenDate = lastOpen ? new Date(JSON.parse(lastOpen)) : new Date();
+
+    //         const currentDate = new Date();
+    //         const oneMinutePassed = (currentDate.getTime() - lastOpenDate.getTime()) >= 60000;
+
+    //         if (oneMinutePassed) {
+    //             allTasks.forEach(async (task) => {
+    //                 if (task.repeat === false)
+    //                     await updateTask({ id: task.id, myDay: false });
+    //             });
+
+    //         }
+    //     };
+
+    //     resetMyDay();
+    // }, []);
 
     return (
         <View style={styles.container}>
