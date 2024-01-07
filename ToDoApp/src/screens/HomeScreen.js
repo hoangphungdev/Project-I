@@ -80,12 +80,12 @@ const HomeScreen = () => {
                     <Text style={{ fontSize: 20, color: '#339AF0', }}>Đăng xuất</Text>
                 </TouchableOpacity>
                 <View style={{ flex: 1 }} ></View>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                     <Image
                         source={require('../../assets/icons8-search-48.png')}
                         style={styles.iconSearch}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <View style={{ height: 0.5, width: '100%', backgroundColor: '#DEDEDE' }} />
             <ScrollView >
